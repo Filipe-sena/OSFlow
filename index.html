@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        body{
+            background-color: rgb(32, 32, 32);
+            font-family: "Roboto", sans-serif;
+            min-height: 100vh;
+        }
+        .div-central{
+            background-color: rgb(37, 35, 49);
+            padding: 40px;
+            margin: 40px auto;
+            height: auto;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+        } 
+        form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        label{
+            width: 100%;
+            text-align: left;
+            color: #00b900;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        input{
+            background-color: rgb(45, 43, 58);
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid transparent;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus{
+            background-color: rgb(39, 39, 39);
+            border-color: rgb(0, 185, 0);
+        }
+        textarea{
+            background-color: rgb(45, 43, 58);
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            resize: vertical;
+            min-height: 80px;
+            max-height: 300px;
+            border: 2px solid transparent;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+        textarea:focus{
+            background-color: rgb(39, 39, 39);
+            border-color: rgb(0, 185, 0);
+        }
+        .div-buttons{
+            width: 100%;
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: "Roboto", sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+        /* CORES DOS BOTÕES */
+        .btn-save    { background-color: #2da44e; } /* Verde */
+        .btn-delete  { background-color: #cf222e; } /* Vermelho */
+        .btn-edit    { background-color: #d29922; } /* Laranja */
+        .btn-neutral { background-color: #444c56; } /* Cinza */
+        .hamburger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .hamburger span{
+            display: block;
+            width: 30px;
+            height: 3px;
+            margin: 5px;
+            background-color: white;
+            transition: 0.4s ease;
+        }
+        .sidebar{
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 250px;
+            height: 100%;
+            background-color: #252331;
+            transition: 0.4s ease;
+            padding-top: 60px;
+            transform: translateX(-100%);
+            z-index: 1000;
+        }
+        .sidebar.active{
+            transform: translateX(0);
+        }
+        .sidebar a{
+            display: block;
+            padding: 15px 25px;
+            border: 3px solid transparent;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.4s;
+        }
+        .sidebar a:hover{
+            background-color: #2b2b2b;
+            padding-left: 35px;
+        }
+        .sidebar ul{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            width: 100%;
+        }
+        .titulo-pagina{
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: #22202e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        .titulo-pagina h1{
+            margin: 0;
+            color: aliceblue;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        #container-clientes{
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px;
+        }
+        .card-cliente{
+            background-color: #252331;
+            color: white;
+            flex: calc(33% - 30px);
+            min-width: 250px;
+            max-width: 350px;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+            border-left: 5px solid #19005f; /* Uma faixa lateral de cor */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-cliente:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.4);
+        }
+        .card-cliente .btn, .div-os .btn {
+            margin-top: 10px;
+            width: 100%; /* Por padrão no mobile */
+        }
+        .div-busca{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .barra-busca{
+            margin-top: 40px;
+            margin-bottom: 30px;
+            width: 30%;
+            max-width: 400px;
+        }
+        select {
+            background-color: rgb(45, 43, 58);
+            color: white;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid transparent;
+            outline: none;
+            cursor: pointer;
+            appearance: none; /* Remove a seta padrão do navegador para alguns sistemas */
+        }
+        select:focus {
+            border-color: rgb(0, 185, 0);
+        }
+        .div-aviso{
+            background-color: #252331;
+            border: 2px;
+            border-color: rgb(190, 0, 0);
+            border-radius: 12px;
+            color: white;
+            padding: 30px;
+            margin: 0 auto;
+        }
+        #container-todas-os{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+        .div-os{
+            background-color: #252331;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            flex: calc(25% - 30px);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            min-width: 250px;
+            max-width: 350px;
+        }
+        .div-buttons-card {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: 15px;
+        }
+        @media (max-width: 800px){
+            .div-os{
+                padding: 10px;
+                min-width: 140px;
+                flex: calc(50% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <section id="tela-principal">
+        <div class="titulo-pagina">
+            <h1>Seja bem vindo ao OS Maker</h1>
+        </div>
+        
+    </section>
+
+    <section id="tela-cadastro" style="display: none;">
+        <div class="titulo-pagina">
+            <h1 style="text-align: center; color: aliceblue;">Cadastre um novo cliente!</h1>
+        </div>
+        <div id="perfil-cliente" class="div-central">
+            <form id="form-cliente" action="">
+                <label for="nome">Informações do cliente</label>
+                <input type="text" id="nome" placeholder="Nome" required>
+                <input type="text" id="descricao" placeholder="Descrição">
+                <input type="number" id="cpf" placeholder="CPF">
+                <label for="telefone">Informações para contato</label>
+                <input type="tel" id="telefone" placeholder="Telefone" required>
+                <input type="text" id="endereco" placeholder="Endereço">
+                <div class="div-buttons">
+                    <button type="reset" id="reset-button" class="btn btn-delete">Limpar</button>
+                    <button type="submit" id="save-button" class="btn btn-save"> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="tela-os" style="display: none;">
+        <div class="titulo-pagina">
+            <h1 style="color: white; text-align: center;">Ordem de Serviço</h1>
+        </div>
+   
+        <div id="os" class="div-central">
+            <form id="form-os" action="">
+                <label for="select-status-os" style="text-align: center;">Status da Ordem de serviço</label>
+                <select id="select-status-os" style="width: 200px; display: flex;">
+                    <option value="orcamento">Em orçamento</option>
+                    <option value="andamento">Em andamento</option>
+                    <option value="pagamento">Aguardando pagamento</option>
+                    <option value="concluido">Concluído</option>
+                </select>
+                <label for="select-clientes">Selecionar Cliente</label>
+                <select id="select-clientes">
+                    <option value="">Selecione um cliente</option>
+                </select>
+                <label for="produto">Descrição do produto</label>
+                <input type="text" id="produto" placeholder="Produto" required>
+                <textarea name="" id="observacao" placeholder="Oberservações" required></textarea>
+                <label for="relato">Problema apresentado</label>
+                <textarea name="" id="relato" placeholder="Relato do cliente" required></textarea>
+                <textarea name="" id="laudo" placeholder="Laudo técnico"></textarea>
+                <label for="valor">Valor a cobrar:</label>
+                <input type="number" id="valor" placeholder="R$">
+                <label for="data-recebimento">Data de recebimento</label>
+                <input type="date" id="data-recebimento" required>
+                <label for="data-entrega">Data prevista para entrega</label>
+                <input id="data-entrega" type="date" required>
+                <div class="div-buttons">
+                    <button type="reset" id="reset-os" class="btn btn-delete">Limpar</button>
+                    <button type="submit" id="save-os" class="btn btn-save">Salvar</button>
+                </div>
+            </form> 
+        </div>
+    </section>
+
+    <section id="tela-lista-clientes" style="display: none;">
+        <div class="titulo-pagina">
+            <h1 style="color: white; text-align: center;">Lista de clientes</h1>
+        </div>
+        
+        <div class="div-busca">
+            <input type="text" class="barra-busca" id="barra-busca" placeholder="Busque por um cliente">
+        </div>
+        <div id="container-clientes"></div>
+    </section>
+
+    <section id="tela-historico" style="display: none;">
+        <div class="titulo-pagina">
+            <h1 id="titulo-historico">Histórico do cliente</h1>
+        </div>
+        <div id="container-historico" class="div-central"></div>
+        <button class="save-button" onclick="voltarParaClientes()">Voltar</button>
+    </section>
+
+    <section id="tela-todas-os" style="display: none;">
+        <div class="titulo-pagina">
+            <h1>Exibindo todas as ordens de serviço</h1>
+        </div>
+        <select id="select-opcoes-2" style="width: 200px;">
+            <option value="antiga">Mais antiga (Recebimento)</option>
+            <option value="nova">Mais nova (Recebimento)</option>
+            <option value="prazo">Prazo de entrega (Próximas)</option>
+        </select>
+        <select id="select-opcoes-exibicao" style="width: 200px;">
+            <option value="todas">Todas OS</option>
+            <option value="orcamento">Em orçamento</option>
+            <option value="andamento">Em andamento</option>
+            <option value="pagamento">Aguardando pagamento</option>
+            <option value="concluido">Concluída</option>
+        </select>
+        <div id="container-todas-os"></div>        
+    </section>
+
+    <button id="menuButton" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav id="sidebar" class="sidebar">
+        <ul style="color: white;">
+            <li><a id="link-principal" href="#">Tela principal</a></li>
+            <li>
+                <li><a id="btn-submenu-os" href="#" style="display: flex; justify-content: space-between;">
+                    Ordem de serviço <span>▼</span>
+                </a></li>
+                <ul id="submenu-os" style="display: none; background-color: #1a1824;;">
+                    <li><a id="link-os" href="#" style="padding-left: 50px; font-size: 0.9rem;">Cadastrar OS</a></li>
+                    <li><a id="link-todas-os" href="#" style="padding-left: 50px; font-size: 0.9rem;">Todas as OS</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <li><a id="btn-submenu-clientes" href="#">
+                    Clientes <span>▼</span>
+                </a></li>
+                <ul id="submenu-clientes" style="display: none; background-color: #1a1824;">
+                    <li><a id="link-cadastro" href="#" style="padding-left: 50px; font-size: 0.9rem;">Cadastrar cliente</a></li>
+                    <li><a id="link-clientes" href="#" style="padding-left: 50px; font-size: 0.9rem;">Clientes cadastrados</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+
+    <script>
+        const formOS = document.querySelector('#form-os');
+        formOS.addEventListener('submit', (evento) => {
+            evento.preventDefault();
+            listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+            
+            let dadosOS = {
+                status: document.querySelector('#select-status-os').value,
+                cliente : document.querySelector('#select-clientes').value,
+                produto : document.querySelector('#produto').value,
+                observacao : document.querySelector('#observacao').value,
+                relato : document.querySelector('#relato').value,
+                laudo : document.querySelector('#laudo').value,
+                dataRecebimento: document.querySelector('#data-recebimento').value,
+                dataEntrega: document.querySelector('#data-entrega').value,
+                valor : document.querySelector('#valor').value
+            };
+
+            if (editandoIndiceOs !== null){
+                listaOS[editandoIndiceOs] = dadosOS
+                alert(`A os do produto ${dadosOS.produto} foi atualizada com sucesso`)
+                editandoIndiceOs = null;
+                linkTodasOs.click();
+            } else{
+                listaOS.push(dadosOS);
+                alert(`A OS do produto ${dadosOS.produto} foi salva com sucesso`);
+            }
+
+            localStorage.setItem('listaOS', JSON.stringify(listaOS));
+            formOS.reset();
+        });
+
+
+        const formCliente = document.querySelector('#form-cliente')
+        formCliente.addEventListener('submit', (evento) => {
+            evento.preventDefault()
+            const nomeDigitado = document.querySelector('#nome').value.trim();
+            const cpfDigitado = document.querySelector('#cpf').value;
+            const descricaoDigitado = document.querySelector('#descricao').value;
+            const telefoneDigitado = document.querySelector('#telefone').value;
+            const enderecoDigitado = document.querySelector('#endereco').value;
+            
+            const cliente = {
+                nome : nomeDigitado,
+                cpf : cpfDigitado,
+                descricao : descricaoDigitado,
+                telefone : telefoneDigitado,
+                endereco : enderecoDigitado
+            }
+            let listaClientes = JSON.parse(localStorage.getItem('clientes')) || [];
+
+            if(listaClientes.some((c, index) => c.nome.toLowerCase() === nomeDigitado.toLowerCase() && index !== editandoIndiceCliente)){
+                alert(`Erro: já existe um cliente cadastrado com o nome: ${nomeDigitado}`)
+                return
+            }
+
+            if(editandoIndiceCliente !== null){
+                listaClientes[editandoIndiceCliente] = cliente;
+                alert(`As informações do cliente ${cliente.nome} foram atualizas com sucesso`);
+                editandoIndiceCliente = null;
+                linkClientes.click();
+            } else{
+                listaClientes.push(cliente)
+                alert('O cliente ' + cliente.nome +' foi cadastrado com sucesso');
+            }
+
+            localStorage.setItem('clientes', JSON.stringify(listaClientes));
+            formCliente.reset();
+        });
+
+        const buttonMenu = document.querySelector('#menuButton');
+        const sidebar= document.querySelector('#sidebar');
+        buttonMenu.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        const btnSubmenuOs = document.querySelector('#btn-submenu-os');
+        const submenuOS = document.querySelector('#submenu-os');
+        btnSubmenuOs.addEventListener('click', (e) => {
+            e.preventDefault(); // Impede a página de pular
+            if (submenuOS.style.display === 'none') {
+                submenuOS.style.display = 'block';
+                btnSubmenuOs.querySelector('span').innerText = '▲';
+            } else {
+                submenuOS.style.display = 'none';
+                btnSubmenuOs.querySelector('span').innerText = '▼';
+            }
+        });
+
+        const btnSubmenuCliente = document.querySelector('#btn-submenu-clientes');
+        const submenuCliente = document.querySelector('#submenu-clientes');
+        btnSubmenuCliente.addEventListener('click', (e) => {
+            e.preventDefault(); // Impede a página de pular
+            if (submenuCliente.style.display === 'none') {
+                submenuCliente.style.display = 'block';
+                btnSubmenuCliente.querySelector('span').innerText = '▲';
+            } else {
+                submenuCliente.style.display = 'none';
+                btnSubmenuCliente.querySelector('span').innerText = '▼';
+            }
+        });
+
+        // Fechar a sidebar ao clicar em qualquer link de dentro dela
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                // Se não for o botão do submenu, fecha a barra
+                if(link.id !== 'btn-submenu-os' && link.id !== 'btn-submenu-clientes') {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        const opcoesExibicao1= document.querySelector('#select-opcoes-exibicao');
+        opcoesExibicao1.addEventListener('change', () => {
+            renderizarOs();
+        })
+
+        const opcoesExibicao2 = document.querySelector('#select-opcoes-2');
+        opcoesExibicao2.addEventListener('change', () => {
+            renderizarOs();
+        })
+
+        const linkOS = document.querySelector('#link-os');
+        linkOS.addEventListener('click', () => {
+            editandoIndiceOs = null;
+            formOS.reset();
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+            document.querySelector('#tela-os').style.display = "block";
+            exibirClientes();
+        });
+
+        const linkTodasOs = document.querySelector('#link-todas-os');
+        linkTodasOs.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+            document.querySelector('#tela-todas-os').style.display = "block";
+            renderizarOs();
+        });
+
+        const linkCadastro = document.querySelector('#link-cadastro');
+        linkCadastro.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-cadastro').style.display = 'block';
+
+        });
+
+        const linkClientes = document.querySelector('#link-clientes');
+        linkClientes.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-lista-clientes').style.display = 'block';
+            renderizarClientes();
+        });
+        
+        const linkPrincipal = document.querySelector('#link-principal');
+        linkPrincipal.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-principal').style.display = 'block';
+        });
+
+        /*  SEÇÃO PARA AS FUNÇÕES */
+
+        function renderizarClientes() {
+            const container = document.querySelector('#container-clientes');
+            const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+            container.innerHTML = "";
+            
+            if (clientes.length === 0) {
+                const aviso = document.createElement('div');
+                aviso.classList.add('div-aviso');
+                aviso.innerHTML = `<h3>Não há clientes cadastrados</h3>`;
+                container.appendChild(aviso);
+                return;
+            }
+
+            clientes.forEach((cliente, index) => {
+                const cartao = document.createElement('div');
+                cartao.classList.add('card-cliente');
+
+                cartao.innerHTML = `
+                    <h3>${cliente.nome}</h3>
+                    <p>CPF: ${cliente.cpf}</p>
+                    <p>Tel: ${cliente.telefone}</p>
+                    <div class="div-buttons-card">
+                        <button class='btn btn-delete' onclick="excluirCliente(${index})">Excluir</button>
+                        <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
+                        <button class="btn btn-edit" onclick="editarCliente(${index})">Editar</button>
+                    </div>
+                `;
+                container.appendChild(cartao);
+            });
+        };
+
+        let editandoIndiceCliente = null;
+        function editarCliente(posicao){
+            let listaClientes = JSON.parse(localStorage.getItem('clientes')) || [];
+            editandoIndiceCliente = posicao;
+            os = listaClientes[posicao];
+
+            document.querySelector('#nome').value = os.nome
+            document.querySelector('#descricao').value = os.descricao
+            document.querySelector('#cpf').value = os.cpf
+            document.querySelector('#telefone').value = os.telefone
+            document.querySelector('#endereco').value = os.endereco
+
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+            document.querySelector('#tela-cadastro').style.display = "block"
+        }
+
+        function renderizarOs() {
+            const criterio1 = document.querySelector('#select-opcoes-exibicao').value;
+            const criterio2 = document.querySelector('#select-opcoes-2').value;
+            const containerListaOs = document.querySelector('#container-todas-os');
+            containerListaOs.innerHTML = ""
+            let listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+
+            if(listaOS.length === 0) {
+                const aviso = document.createElement('div');
+                aviso.classList.add('div-aviso');
+                aviso.innerHTML = `<h3>Não há ordens de serviços cadastradas</h3>`
+                containerListaOs.appendChild(aviso)
+                return
+            };
+            
+            listaOsFiltrada = listaOS.filter(os => {
+                if (criterio1 === "todas"){
+                    return true
+                } else{
+                    return os.status === criterio1;
+                }
+            });
+            if(listaOsFiltrada.length === 0) {
+                const aviso = document.createElement('div');
+                aviso.classList.add('div-aviso');
+                aviso.innerHTML = `<h3>Não há ordens de serviço com o status escolhido</h3>`
+                containerListaOs.appendChild(aviso)
+                return
+            };
+
+            listaOsFiltrada.sort((a,b) => {
+                dataRecebimentoA = new Date(a.dataRecebimento);
+                dataEntregaA = new Date(a.dataEntrega);
+                dataRecebimentoB = new Date(b.dataRecebimento);
+                dataEntregaB = new Date(b.dataEntrega);
+
+                if (criterio2 === "nova"){
+                    return dataRecebimentoB - dataRecebimentoA;
+                }
+                if (criterio2 ==="velha"){
+                    return dataRecebimentoA - dataRecebimentoB;
+                }
+                if (criterio2 ==="prazo"){
+                    return dataEntregaA - dataEntregaB;
+                }
+            })
+
+            listaOsFiltrada.forEach((os) => {
+                const indiceReal = listaOS.indexOf(os)
+                const divOS = document.createElement('div');
+                divOS.classList.add('div-os')
+                divOS.innerHTML = `
+                    <h1 style="color: #00b900; margin-bottom: 10px;">${os.produto}</h1>
+                    <p><strong>Cliente:</strong> ${os.cliente}</p>
+                    <p><strong>Valor:</strong> R$ ${os.valor}</p>
+                    <div class="div-buttons-card">
+                        <button class="btn btn-delete" onclick="excluirOs(${indiceReal})">Excluir</button>
+                        <button class="btn btn-edit" onclick="editarOs(${indiceReal})">Editar</button>
+                    </div>
+                `;
+                containerListaOs.appendChild(divOS);
+            });
+        };
+
+        let editandoIndiceOs = null;
+        function editarOs(posicao){
+            listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+            editandoIndiceOs = posicao;
+            const os = listaOS[posicao]
+
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+            document.querySelector('#tela-os').style.display = "block";
+
+            exibirClientes();
+ 
+            document.querySelector('#select-status-os').value = os.status;
+            document.querySelector('#select-clientes').value = os.cliente;
+            document.querySelector('#produto').value = os.produto;
+            document.querySelector('#observacao').value = os.observacao;
+            document.querySelector('#relato').value = os.relato;
+            document.querySelector('#laudo').value = os.laudo;
+            document.querySelector('#valor').value = os.valor;
+            document.querySelector('#data-recebimento').value = os.dataRecebimento;
+            document.querySelector('#data-entrega').value = os.dataEntrega;
+        }
+
+        function excluirCliente(posicao) {
+            let lista = JSON.parse(localStorage.getItem('clientes'));
+            lista.splice(posicao, 1);
+            localStorage.setItem('clientes', JSON.stringify(lista));
+            renderizarClientes()
+        }
+
+        function excluirOs(posicao){
+            let listaOS = JSON.parse(localStorage.getItem('listaOS'));
+            listaOS.splice(posicao, 1);
+            localStorage.setItem('listaOS', JSON.stringify(listaOS));
+            renderizarOs();
+        }
+
+        const inputBusca = document.querySelector('#barra-busca');
+        inputBusca.addEventListener('input', () => {
+            const todosClientes = JSON.parse(localStorage.getItem('clientes'));
+            const valorBusca = inputBusca.value.toLowerCase();
+            const clientesFiltrados = todosClientes.filter(cliente => {
+                return cliente.nome.toLowerCase().includes(valorBusca);
+            })
+            renderizarClientesFiltrados(clientesFiltrados);
+        })
+
+        function renderizarClientesFiltrados(clientesFiltrados) {
+            containerClientes = document.querySelector('#container-clientes');
+            containerClientes.innerHTML = "";
+
+            clientesFiltrados.forEach((cliente, index) => {
+                const cartao = document.createElement('div');
+                cartao.classList.add('card-cliente');
+                cartao.innerHTML = `
+                <h3>${cliente.nome}</h3>
+                <p>CPF: ${cliente.cpf}</p>
+                <p>Tel: ${cliente.telefone}</p>
+                <button class="btn btn-delete" onclick="excluirCliente(${index})">Excluir</button>
+                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico de OS</button>
+                `;
+                containerClientes.appendChild(cartao);
+            });
+        };
+
+        function exibirClientes() {
+            const select = document.querySelector('#select-clientes');
+            select.innerHTML = '<option value="">Selecione um cliente</option>'
+            const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.nome;
+                option.textContent = cliente.nome;
+                select.appendChild(option);
+            })
+        };
+
+        function verHistorico(nomeCliente) {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.querySelector('#tela-historico').style.display = 'block';
+
+            document.querySelector('#titulo-historico').innerText = `Serviços: ${nomeCliente}`;
+
+            const todasOS = JSON.parse(localStorage.getItem('listaOS')) || [];
+            const historicofiltrado = todasOS.filter(os => os.cliente === nomeCliente);
+
+            const container = document.querySelector('#container-historico');
+            container.innerHTML = "";
+
+            if (historicofiltrado.length === 0) {
+                const div = document.createElement('div');
+                div.classList.add('div-central');
+                div.innerHTML = "Este cliente não possui histórico de OS";
+                return;
+            }
+
+            historicofiltrado.forEach(os => {
+                const itemOS = document.createElement('div');
+                itemOS.classList.add('item-os');
+                itemOS.innerHTML = `
+                <p>Produto: ${os.produto}</p>
+                <p>Observação: ${os.observacao}</p>
+                <p>relato do cliente : ${os.relato}</p>
+                <p>Laudo técnico: ${os.laudo}</p>
+                <p>Valor a cobrar: ${os.valor}</p>
+                `;
+                container.appendChild(itemOS)
+            });
+        };
+        function voltarParaClientes() {
+            document.querySelector('#tela-historico').style.display = 'none';
+            document.querySelector('#tela-lista-clientes').style.display = 'block';
+        };
+    </script>
+</body>
+</html>
