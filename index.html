@@ -404,9 +404,8 @@
 
     <script>
         const formOS = document.querySelector('#form-os');
-        formOS.addEventListener('submit', (evento) => {
+        formOS.addEventListener('submit', async (evento) => {
             evento.preventDefault();
-            listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
             
             let dadosOS = {
                 status: document.querySelector('#select-status-os').value,
@@ -420,20 +419,29 @@
                 valor : document.querySelector('#valor').value
             };
 
-            if (editandoIndiceOs !== null){
-                listaOS[editandoIndiceOs] = dadosOS
-                alert(`A os do produto ${dadosOS.produto} foi atualizada com sucesso`)
-                editandoIndiceOs = null;
-                linkTodasOs.click();
-            } else{
-                listaOS.push(dadosOS);
-                alert(`A OS do produto ${dadosOS.produto} foi salva com sucesso`);
+            if(editandoIndiceCliente !== null){
+                console.log("ainda vou desenvolver essa função")
+            } 
+            else{
+                try{
+                    const resposta = await fetch('http://localhost:3000/os', {
+                        method: 'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body: JSON.stringify(dadosOS)
+                    })
+                    if(resposta.ok){
+                        const resultado = await resposta.json()
+                        alert(`A ordem de serviço do produto ${resultado.produto} foi salva.`)
+                        formOS.reset()
+                    }
+                }
+                catch (err){
+                    alert(`Ocorreu um erro no servidor`)
+                }      
             }
-
-            localStorage.setItem('listaOS', JSON.stringify(listaOS));
-            formOS.reset();
         });
-
 
         const formCliente = document.querySelector('#form-cliente')
         formCliente.addEventListener('submit', (evento) => {
@@ -609,68 +617,68 @@
             document.querySelector('#tela-cadastro').style.display = "block"
         }
 
-        function renderizarOs() {
+        async function renderizarOs() {
             const criterio1 = document.querySelector('#select-opcoes-exibicao').value;
             const criterio2 = document.querySelector('#select-opcoes-2').value;
             const containerListaOs = document.querySelector('#container-todas-os');
             containerListaOs.innerHTML = ""
-            let listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
-
-            if(listaOS.length === 0) {
-                const aviso = document.createElement('div');
-                aviso.classList.add('div-aviso');
-                aviso.innerHTML = `<h3>Não há ordens de serviços cadastradas</h3>`
-                containerListaOs.appendChild(aviso)
-                return
-            };
             
-            listaOsFiltrada = listaOS.filter(os => {
-                if (criterio1 === "todas"){
-                    return true
-                } else{
-                    return os.status === criterio1;
-                }
-            });
-            if(listaOsFiltrada.length === 0) {
-                const aviso = document.createElement('div');
-                aviso.classList.add('div-aviso');
-                aviso.innerHTML = `<h3>Não há ordens de serviço com o status escolhido</h3>`
-                containerListaOs.appendChild(aviso)
-                return
-            };
+            try{
+                const resposta= await fetch('http://localhost:3000/os')
+                if(resposta.ok){
+                    const listaOS = await resposta.json()
+                    listaOsFiltrada = listaOS.filter(os => {
+                        if (criterio1 === "todas"){
+                            return true
+                        } else{
+                            return os.status === criterio1;
+                        }
+                    });
+                    if(listaOsFiltrada.length === 0) {
+                        const aviso = document.createElement('div');
+                        aviso.classList.add('div-aviso');
+                        aviso.innerHTML = `<h3>Não há ordens de serviço com o status escolhido</h3>`
+                        containerListaOs.appendChild(aviso)
+                        return
+                    };
 
-            listaOsFiltrada.sort((a,b) => {
-                dataRecebimentoA = new Date(a.dataRecebimento);
-                dataEntregaA = new Date(a.dataEntrega);
-                dataRecebimentoB = new Date(b.dataRecebimento);
-                dataEntregaB = new Date(b.dataEntrega);
+                    listaOsFiltrada.sort((a,b) => {
+                        dataRecebimentoA = new Date(a.dataRecebimento);
+                        dataEntregaA = new Date(a.dataEntrega);
+                        dataRecebimentoB = new Date(b.dataRecebimento);
+                        dataEntregaB = new Date(b.dataEntrega);
 
-                if (criterio2 === "nova"){
-                    return dataRecebimentoB - dataRecebimentoA;
-                }
-                if (criterio2 ==="velha"){
-                    return dataRecebimentoA - dataRecebimentoB;
-                }
-                if (criterio2 ==="prazo"){
-                    return dataEntregaA - dataEntregaB;
-                }
-            })
+                        if (criterio2 === "nova"){
+                            return dataRecebimentoB - dataRecebimentoA;
+                        }
+                        if (criterio2 ==="velha"){
+                            return dataRecebimentoA - dataRecebimentoB;
+                        }
+                        if (criterio2 ==="prazo"){
+                            return dataEntregaA - dataEntregaB;
+                        }
+                    })
 
-            listaOsFiltrada.forEach((os) => {
-                const indiceReal = listaOS.indexOf(os)
-                const divOS = document.createElement('div');
-                divOS.classList.add('div-os')
-                divOS.innerHTML = `
-                    <h1 style="color: #00b900; margin-bottom: 10px;">${os.produto}</h1>
-                    <p><strong>Cliente:</strong> ${os.cliente}</p>
-                    <p><strong>Valor:</strong> R$ ${os.valor}</p>
-                    <div class="div-buttons-card">
-                        <button class="btn btn-delete" onclick="excluirOs(${indiceReal})">Excluir</button>
-                        <button class="btn btn-edit" onclick="editarOs(${indiceReal})">Editar</button>
-                    </div>
-                `;
-                containerListaOs.appendChild(divOS);
-            });
+                    listaOsFiltrada.forEach((os) => {
+                        const indiceReal = listaOS.indexOf(os)
+                        const divOS = document.createElement('div');
+                        divOS.classList.add('div-os')
+                        divOS.innerHTML = `
+                            <h1 style="color: #00b900; margin-bottom: 10px;">${os.produto}</h1>
+                            <p><strong>Cliente:</strong> ${os.cliente}</p>
+                            <p><strong>Valor:</strong> R$ ${os.valor}</p>
+                            <div class="div-buttons-card">
+                                <button class="btn btn-delete" onclick="excluirOs(${indiceReal})">Excluir</button>
+                                <button class="btn btn-edit" onclick="editarOs(${indiceReal})">Editar</button>
+                            </div>
+                        `;
+                        containerListaOs.appendChild(divOS);
+                    });
+                }
+            }
+            catch (err){
+                console.log('Erro ao carregar as ordens de serviço', err);
+            }
         };
 
         let editandoIndiceOs = null;

@@ -20,3 +20,27 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando em https://localhost:${PORT}`)
 })
+
+const OrdemServico = require('./models/OrdemServico')
+
+app.post('/os', async (req,res) =>{
+    try{
+        const novaOs = new OrdemServico(req.body);
+        const osSalva = await novaOs.save();
+
+        res.status(201).json(osSalva);
+    }
+    catch (err){
+        res.status(400).json({ message: "Erro ao salvar OS", erro: err.message });
+    }
+})
+
+app.get('/os', async (req,res) =>{
+    try{
+        const todasOs = await OrdemServico.find()
+        res.status(200).json(todasOs)
+    }
+    catch (err){
+        res.status(500).json({ message: "Erro ao buscar as OS", erro: err.message });
+    }
+})
