@@ -44,3 +44,54 @@ app.get('/os', async (req,res) =>{
         res.status(500).json({ message: "Erro ao buscar as OS", erro: err.message });
     }
 })
+
+app.delete('/os/:id', async (req,res) => {
+    try{
+        const id = req.params.id
+        const osExcluida = await OrdemServico.findByIdAndDelete(id)
+        if (!osExcluida){
+            return res.status(400).json({message: "Erro ao encontrar OS"})
+        }
+        res.status(200).json({message: "OS excluída com sucesso"})
+    }
+    catch (err){
+        res.status(500).json({message: "Erro ao excluir OS", erro: err.message})
+    }
+})
+
+const Cliente = require('./models/Cliente');
+
+app.post('/cliente', async (req,res) =>{
+    try{
+        const novoCliente = new Cliente(req.body)
+        const ClienteSalvo = await novoCliente.save()
+        res.status(201).json(ClienteSalvo);
+    }
+    catch(err){
+        res.status(400).json({message: "Erro ao buscar OS", erro: err.message})
+    }
+})
+
+app.get('/cliente', async (req,res) => {
+    try{
+        const listaClientes =  await Cliente.find()
+        res.status(200).json(listaClientes)
+    }
+    catch(err){
+        res.status(500).json({message:"Erro ao encontar Clientes", erro: err.message})
+    }
+})
+
+app.delete('/cliente/:id', async (req,res) => {
+    try{
+        const id = req.params.id
+        const ClienteExcluido = await Cliente.findByIdAndDelete(id)
+        if(!ClienteExcluido){
+            return res.status(400).json({message: "Cliente não encontrado"})
+        }
+        res.status(200).json({message: "Cliente Deletado"})
+    }
+    catch(err){
+        res.status(500).json({message: "Não foi possível se conectar ao servidor"})
+    }
+})

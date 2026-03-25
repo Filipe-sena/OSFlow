@@ -444,7 +444,7 @@
         });
 
         const formCliente = document.querySelector('#form-cliente')
-        formCliente.addEventListener('submit', (evento) => {
+        formCliente.addEventListener('submit', async (evento) => {
             evento.preventDefault()
             const nomeDigitado = document.querySelector('#nome').value.trim();
             const cpfDigitado = document.querySelector('#cpf').value;
@@ -459,25 +459,24 @@
                 telefone : telefoneDigitado,
                 endereco : enderecoDigitado
             }
-            let listaClientes = JSON.parse(localStorage.getItem('clientes')) || [];
 
-            if(listaClientes.some((c, index) => c.nome.toLowerCase() === nomeDigitado.toLowerCase() && index !== editandoIndiceCliente)){
-                alert(`Erro: já existe um cliente cadastrado com o nome: ${nomeDigitado}`)
-                return
+            try{
+                const resposta = await fetch('http://localhost:3000/cliente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(cliente)
+                })
+                if(resposta.ok){
+                    const clienteSalvo = await resposta.json()
+                    alert(`O cliente ${clienteSalvo.nome} foi cadastrado com sucesso`)
+                    formCliente.reset();
+                }
             }
-
-            if(editandoIndiceCliente !== null){
-                listaClientes[editandoIndiceCliente] = cliente;
-                alert(`As informações do cliente ${cliente.nome} foram atualizas com sucesso`);
-                editandoIndiceCliente = null;
-                linkClientes.click();
-            } else{
-                listaClientes.push(cliente)
-                alert('O cliente ' + cliente.nome +' foi cadastrado com sucesso');
+            catch(err){
+                console.log('Erro ao conectar com o servidor')
             }
-
-            localStorage.setItem('clientes', JSON.stringify(listaClientes));
-            formCliente.reset();
         });
 
         const buttonMenu = document.querySelector('#menuButton');
@@ -570,35 +569,43 @@
 
         /*  SEÇÃO PARA AS FUNÇÕES */
 
-        function renderizarClientes() {
+        async function renderizarClientes() {
             const container = document.querySelector('#container-clientes');
-            const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
             container.innerHTML = "";
-            
-            if (clientes.length === 0) {
-                const aviso = document.createElement('div');
-                aviso.classList.add('div-aviso');
-                aviso.innerHTML = `<h3>Não há clientes cadastrados</h3>`;
-                container.appendChild(aviso);
-                return;
+
+            try{
+                const resposta = await fetch('http://localhost:3000/cliente');
+                if(resposta.ok){
+                    const clientes = await resposta.json()
+                    if (clientes.length === 0) {
+                        const aviso = document.createElement('div');
+                        aviso.classList.add('div-aviso');
+                        aviso.innerHTML = `<h3>Não há clientes cadastrados</h3>`;
+                        container.appendChild(aviso);
+                        return;
+                    }
+
+                    clientes.forEach((cliente) => {
+                        const cartao = document.createElement('div');
+                        cartao.classList.add('card-cliente');
+
+                        cartao.innerHTML = `
+                            <h3>${cliente.nome}</h3>
+                            <p>CPF: ${cliente.cpf}</p>
+                            <p>Tel: ${cliente.telefone}</p>
+                            <div class="div-buttons-card">
+                                <button class='btn btn-delete' onclick="excluirCliente('${cliente._id}')">Excluir</button>
+                                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
+                                <button class="btn btn-edit" onclick="editarCliente(${index})">Editar</button>
+                            </div>
+                        `;
+                        container.appendChild(cartao);
+                    });
+                }
             }
-
-            clientes.forEach((cliente, index) => {
-                const cartao = document.createElement('div');
-                cartao.classList.add('card-cliente');
-
-                cartao.innerHTML = `
-                    <h3>${cliente.nome}</h3>
-                    <p>CPF: ${cliente.cpf}</p>
-                    <p>Tel: ${cliente.telefone}</p>
-                    <div class="div-buttons-card">
-                        <button class='btn btn-delete' onclick="excluirCliente(${index})">Excluir</button>
-                        <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
-                        <button class="btn btn-edit" onclick="editarCliente(${index})">Editar</button>
-                    </div>
-                `;
-                container.appendChild(cartao);
-            });
+            catch(err){
+                console.log("Erro ao conectar com o servidor")
+            }
         };
 
         let editandoIndiceCliente = null;
@@ -660,16 +667,15 @@
                     })
 
                     listaOsFiltrada.forEach((os) => {
-                        const indiceReal = listaOS.indexOf(os)
                         const divOS = document.createElement('div');
                         divOS.classList.add('div-os')
-                        divOS.innerHTML = `
+                        divOS.innerHTML = `s
                             <h1 style="color: #00b900; margin-bottom: 10px;">${os.produto}</h1>
                             <p><strong>Cliente:</strong> ${os.cliente}</p>
                             <p><strong>Valor:</strong> R$ ${os.valor}</p>
                             <div class="div-buttons-card">
-                                <button class="btn btn-delete" onclick="excluirOs(${indiceReal})">Excluir</button>
-                                <button class="btn btn-edit" onclick="editarOs(${indiceReal})">Editar</button>
+                                <button class="btn btn-delete" onclick="excluirOs('${os._id}')">Excluir</button>
+                                <button class="btn btn-edit" onclick="editarOs('${os._id}')">Editar</button>
                             </div>
                         `;
                         containerListaOs.appendChild(divOS);
@@ -703,18 +709,43 @@
             document.querySelector('#data-entrega').value = os.dataEntrega;
         }
 
-        function excluirCliente(posicao) {
-            let lista = JSON.parse(localStorage.getItem('clientes'));
-            lista.splice(posicao, 1);
-            localStorage.setItem('clientes', JSON.stringify(lista));
-            renderizarClientes()
+        async function excluirCliente(id) {
+            if(!confirm('Tem certeza de que deseja excliuir este cliente?')){return}
+            try{
+                const resposta = await fetch(`http://localhost:3000/cliente/${id}`, {
+                    method: 'DELETE'
+                })
+                if (resposta.ok){
+                    alert('Cliente excluído com sucesso')
+                } else{
+                    const erro = resposta.json()
+                    alert(`Erro: ${erro.message}`)
+                }
+            }            
+            catch(err){
+                console.error("Erro ao conectar com o servidor:", err);
+                alert('Não foi possível se conectar ao servidor')
+            }
         }
 
-        function excluirOs(posicao){
-            let listaOS = JSON.parse(localStorage.getItem('listaOS'));
-            listaOS.splice(posicao, 1);
-            localStorage.setItem('listaOS', JSON.stringify(listaOS));
-            renderizarOs();
+        async function excluirOs(id){
+            if(!confirm("Tem certeza de que deseja excluir?")){return};
+            try{
+                const resposta = await fetch(`http://localhost:3000/os/${id}`, {
+                    method:'DELETE'
+                })
+                if(resposta.ok){
+                    alert("OS deletada com sucesso")
+                    renderizarOs()
+                } else{
+                    const erro = await resposta.json()
+                    alert(`Erro ${erro.message}`)
+                }
+            }
+            catch(err){
+                console.error("Erro ao conectar com o servidor:", err);
+                alert('Não foi possível se conectar ao servidor')
+            }
         }
 
         const inputBusca = document.querySelector('#barra-busca');
