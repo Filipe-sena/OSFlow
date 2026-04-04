@@ -349,7 +349,7 @@
             <h1 id="titulo-historico">Histórico do cliente</h1>
         </div>
         <div id="container-historico" class="div-central"></div>
-        <button class="save-button" onclick="voltarParaClientes()">Voltar</button>
+        <button class="btn btn-neutral" style="left: 100px; top: 100px; position: fixed;" onclick="voltarParaClientes()">Voltar</button>
     </section>
 
     <section id="tela-todas-os" style="display: none;">
@@ -419,8 +419,26 @@
                 valor : document.querySelector('#valor').value
             };
 
-            if(editandoIndiceCliente !== null){
-                console.log("ainda vou desenvolver essa função")
+            if(editandoIndiceOs !== null){
+                try{
+                    const resposta = await fetch(`http://localhost:3000/os/${editandoIndiceOs}`, {
+                        method : 'PUT',
+                        headers:{
+                            'Content-type':'application/json'
+                        },
+                        body: JSON.stringify(dadosOS)
+                    })
+
+                    if(resposta.ok){
+                        alert(`A OS do produto ${dadosOS.produto} foi atualizada com sucesso`);
+                        editandoIndiceOs = null;
+                        formOS.reset();
+                        linkTodasOs.click();
+                    }
+                }
+                catch(err){
+                    alert("Erro ao processar requisição")
+                }
             } 
             else{
                 try{
@@ -460,22 +478,44 @@
                 endereco : enderecoDigitado
             }
 
-            try{
-                const resposta = await fetch('http://localhost:3000/cliente', {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify(cliente)
-                })
-                if(resposta.ok){
-                    const clienteSalvo = await resposta.json()
-                    alert(`O cliente ${clienteSalvo.nome} foi cadastrado com sucesso`)
-                    formCliente.reset();
+            if(editandoIndiceCliente === null){
+                try{
+                    const resposta = await fetch('http://localhost:3000/cliente', {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        body: JSON.stringify(cliente)
+                    })
+                    if(resposta.ok){
+                        const clienteSalvo = await resposta.json()
+                        alert(`O cliente ${clienteSalvo.nome} foi cadastrado com sucesso`)
+                        linkClientes.click()
+                        formCliente.reset();
+                    }
                 }
-            }
-            catch(err){
-                console.log('Erro ao conectar com o servidor')
+                catch(err){
+                    console.log('Erro ao conectar com o servidor')
+                }
+            } else{
+                try{
+                    const resposta = await fetch(`http://localhost:3000/cliente/${editandoIndiceCliente}`, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+                        body: JSON.stringify(cliente)
+                    })
+                    if(resposta.ok){
+                        alert(`O cliente ${cliente.nome} foi atualizado com sucesso`)
+                        editandoIndiceCliente = null
+                        linkClientes.click()
+                        formCliente.reset()
+                    }
+                }
+                catch(err){
+                    alert('Não foi possível se comunicar com o servidor')
+                }
             }
         });
 
@@ -567,7 +607,8 @@
             document.querySelector('#tela-principal').style.display = 'block';
         });
 
-        /*  SEÇÃO PARA AS FUNÇÕES */
+
+        /*  ////////////SEÇÃO PARA AS FUNÇÕES //////////////*/
 
         async function renderizarClientes() {
             const container = document.querySelector('#container-clientes');
@@ -596,7 +637,7 @@
                             <div class="div-buttons-card">
                                 <button class='btn btn-delete' onclick="excluirCliente('${cliente._id}')">Excluir</button>
                                 <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
-                                <button class="btn btn-edit" onclick="editarCliente(${index})">Editar</button>
+                                <button class="btn btn-edit" onclick="editarCliente('${cliente._id}')">Editar</button>
                             </div>
                         `;
                         container.appendChild(cartao);
@@ -609,19 +650,34 @@
         };
 
         let editandoIndiceCliente = null;
-        function editarCliente(posicao){
-            let listaClientes = JSON.parse(localStorage.getItem('clientes')) || [];
-            editandoIndiceCliente = posicao;
-            os = listaClientes[posicao];
+        async function editarCliente(id){
+            try{
+                const resposta = await fetch('http://localhost:3000/cliente')
+                if(resposta.ok){
+                    const listaClientes = await resposta.json()
+                    const cliente = listaClientes.find(item => item._id === id)
+                    if(cliente)  {
+                        document.querySelector('#nome').value = cliente.nome
+                        document.querySelector('#descricao').value = cliente.descricao
+                        document.querySelector('#cpf').value = cliente.cpf
+                        document.querySelector('#telefone').value = cliente.telefone
+                        document.querySelector('#endereco').value = cliente.endereco
 
-            document.querySelector('#nome').value = os.nome
-            document.querySelector('#descricao').value = os.descricao
-            document.querySelector('#cpf').value = os.cpf
-            document.querySelector('#telefone').value = os.telefone
-            document.querySelector('#endereco').value = os.endereco
+                        document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+                        document.querySelector('#tela-cadastro').style.display = "block"
 
-            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
-            document.querySelector('#tela-cadastro').style.display = "block"
+                        editandoIndiceCliente = id
+                    } else{
+                        alert('ERRO: Não existe cliente com este id')
+                    }
+                } else{
+                    alert('Erro: Não foi possível pegar os dados do cliente na api de clientes')
+                }
+            }
+            catch(err){
+                alert('Não foi possivel pegar os dados do servidor')
+                console.log('Erro no try')
+            }
         }
 
         async function renderizarOs() {
@@ -688,25 +744,35 @@
         };
 
         let editandoIndiceOs = null;
-        function editarOs(posicao){
-            listaOS = JSON.parse(localStorage.getItem('listaOS')) || [];
-            editandoIndiceOs = posicao;
-            const os = listaOS[posicao]
-
+        async function editarOs(id){
             document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
             document.querySelector('#tela-os').style.display = "block";
 
             exibirClientes();
- 
-            document.querySelector('#select-status-os').value = os.status;
-            document.querySelector('#select-clientes').value = os.cliente;
-            document.querySelector('#produto').value = os.produto;
-            document.querySelector('#observacao').value = os.observacao;
-            document.querySelector('#relato').value = os.relato;
-            document.querySelector('#laudo').value = os.laudo;
-            document.querySelector('#valor').value = os.valor;
-            document.querySelector('#data-recebimento').value = os.dataRecebimento;
-            document.querySelector('#data-entrega').value = os.dataEntrega;
+
+            try{
+                const resposta = await fetch('http://localhost:3000/os');
+                const listaOS = await resposta.json();
+                const os = listaOS.find(item => item._id === id);
+                
+                if(os){
+                    document.querySelector('#select-status-os').value = os.status;
+                    document.querySelector('#select-clientes').value = os.cliente;
+                    document.querySelector('#produto').value = os.produto;
+                    document.querySelector('#observacao').value = os.observacao;
+                    document.querySelector('#relato').value = os.relato;
+                    document.querySelector('#laudo').value = os.laudo;
+                    document.querySelector('#valor').value = os.valor;
+
+                    if(os.dataRecebimento) document.querySelector('#data-recebimento').value = os.dataRecebimento.split('T')[0];
+                    if(os.dataEntrega) document.querySelector('#data-entrega').value = os.dataEntrega.split('T')[0];
+
+                    editandoIndiceOs = id;
+                }
+            }
+            catch(err){
+                alert('Erro ao carregar dados da OS')
+            }
         }
 
         async function excluirCliente(id) {
@@ -717,6 +783,7 @@
                 })
                 if (resposta.ok){
                     alert('Cliente excluído com sucesso')
+                    linkClientes.click()
                 } else{
                     const erro = resposta.json()
                     alert(`Erro: ${erro.message}`)
@@ -749,13 +816,25 @@
         }
 
         const inputBusca = document.querySelector('#barra-busca');
-        inputBusca.addEventListener('input', () => {
-            const todosClientes = JSON.parse(localStorage.getItem('clientes'));
-            const valorBusca = inputBusca.value.toLowerCase();
-            const clientesFiltrados = todosClientes.filter(cliente => {
-                return cliente.nome.toLowerCase().includes(valorBusca);
-            })
-            renderizarClientesFiltrados(clientesFiltrados);
+        inputBusca.addEventListener('input', async () => {
+            try{
+                const resposta = await fetch('http://localhost:3000/cliente')
+                if(resposta.ok){
+                    const todosClientes = await resposta.json()
+                    const valorBusca = inputBusca.value.toLowerCase();
+                    const clientesFiltrados = todosClientes.filter(cliente => {
+                        return cliente.nome.toLowerCase().includes(valorBusca);
+                    })
+                    renderizarClientesFiltrados(clientesFiltrados);
+                } else{
+                    const erro = resposta.json()
+                    console.log(`Erro no fetch para api de clientes: ${erro}`)
+                }
+            }
+            catch(err){
+                alert('Erro ao fazer busca no servidor')
+                console.log('Erro no try')
+            }
         })
 
         function renderizarClientesFiltrados(clientesFiltrados) {
@@ -776,51 +855,68 @@
             });
         };
 
-        function exibirClientes() {
+        async function exibirClientes() {
             const select = document.querySelector('#select-clientes');
             select.innerHTML = '<option value="">Selecione um cliente</option>'
-            const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
-
-            clientes.forEach(cliente => {
-                const option = document.createElement('option');
-                option.value = cliente.nome;
-                option.textContent = cliente.nome;
-                select.appendChild(option);
-            })
+            try{
+                const resposta = await fetch('http://localhost:3000/cliente')
+                if(resposta.ok){
+                    const clientes = await resposta.json()
+                    clientes.forEach(cliente => {
+                        const option = document.createElement('option');
+                        option.value = cliente.nome;
+                        option.textContent = cliente.nome;
+                        select.appendChild(option);
+                    })  
+                }
+            }
+            catch(err){
+                alert('Erro ao carregar lista de nomes')
+            }
         };
 
-        function verHistorico(nomeCliente) {
+        async function verHistorico(nomeCliente) {
             document.querySelectorAll('section').forEach(s => s.style.display = 'none');
             document.querySelector('#tela-historico').style.display = 'block';
 
             document.querySelector('#titulo-historico').innerText = `Serviços: ${nomeCliente}`;
 
-            const todasOS = JSON.parse(localStorage.getItem('listaOS')) || [];
-            const historicofiltrado = todasOS.filter(os => os.cliente === nomeCliente);
+            try{
+                const resposta = await fetch('http://localhost:3000/os')
+                if(resposta.ok){
+                    const todasOS = await resposta.json()
+                    const historicofiltrado = todasOS.filter(os => os.cliente === nomeCliente);
 
-            const container = document.querySelector('#container-historico');
-            container.innerHTML = "";
+                    const container = document.querySelector('#container-historico');
+                    container.innerHTML = "";
 
-            if (historicofiltrado.length === 0) {
-                const div = document.createElement('div');
-                div.classList.add('div-central');
-                div.innerHTML = "Este cliente não possui histórico de OS";
-                return;
+                    if (historicofiltrado.length === 0) {
+                        const div = document.createElement('div');
+                        div.classList.add('div-central');
+                        div.innerHTML = "Este cliente não possui histórico de OS";
+                        return;
+                    }
+
+                    historicofiltrado.forEach(os => {
+                        const itemOS = document.createElement('div');
+                        itemOS.classList.add('div-os');
+                        itemOS.innerHTML = `
+                        <p>Produto: ${os.produto}</p>
+                        <p>Observação: ${os.observacao}</p>
+                        <p>relato do cliente : ${os.relato}</p>
+                        <p>Laudo técnico: ${os.laudo}</p>
+                        <p>Valor a cobrar: ${os.valor}</p>
+                        `;
+                        container.appendChild(itemOS)
+                    });                                     
+                }
             }
-
-            historicofiltrado.forEach(os => {
-                const itemOS = document.createElement('div');
-                itemOS.classList.add('item-os');
-                itemOS.innerHTML = `
-                <p>Produto: ${os.produto}</p>
-                <p>Observação: ${os.observacao}</p>
-                <p>relato do cliente : ${os.relato}</p>
-                <p>Laudo técnico: ${os.laudo}</p>
-                <p>Valor a cobrar: ${os.valor}</p>
-                `;
-                container.appendChild(itemOS)
-            });
+            catch(err){
+                console.log('erro ao se conectar com o servidor')
+                alert("Erro ao se conectar com o servidor")
+            }
         };
+
         function voltarParaClientes() {
             document.querySelector('#tela-historico').style.display = 'none';
             document.querySelector('#tela-lista-clientes').style.display = 'block';

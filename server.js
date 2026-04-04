@@ -8,7 +8,9 @@ const app = expresss()
 app.use(cors());
 app.use(expresss.json());
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+    family: 4
+})
     .then(() => console.log("conectado com sucesso ao mongodb atlas"))
     .catch(err => console.error('Erro na conexão', err))
 
@@ -59,6 +61,22 @@ app.delete('/os/:id', async (req,res) => {
     }
 })
 
+app.put('/os/:id', async (req,res) => {
+    try{
+        const id = req.params.id
+        const dadosOs = req.body
+        const osAtualizada = await OrdemServico.findByIdAndUpdate(id, dadosOs, {returnDocument: 'after'})
+
+        if(!osAtualizada){
+            return res.status(400).json({message:"Não foi possível encontrar esta OS"})
+        }
+        res.status(200).json(osAtualizada)
+    }
+    catch(err){
+        res.status(500).json({message: "Não foi possível se conectar ao servidor"})
+    }
+})
+
 const Cliente = require('./models/Cliente');
 
 app.post('/cliente', async (req,res) =>{
@@ -90,6 +108,21 @@ app.delete('/cliente/:id', async (req,res) => {
             return res.status(400).json({message: "Cliente não encontrado"})
         }
         res.status(200).json({message: "Cliente Deletado"})
+    }
+    catch(err){
+        res.status(500).json({message: "Não foi possível se conectar ao servidor"})
+    }
+})
+
+app.put('/cliente/:id', async (req, res) => {
+    try{
+        const id = req.params.id
+        const dadosCliente = req.body
+        const clienteAtualizado = await Cliente.findByIdAndUpdate(id, dadosCliente, {returnDocument: 'after'})
+        if (!clienteAtualizado){
+            return res.status(400).json({message: "Não foi possível encontrar este cliente"})
+        }
+        res.status(200).json(clienteAtualizado)
     }
     catch(err){
         res.status(500).json({message: "Não foi possível se conectar ao servidor"})
