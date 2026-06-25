@@ -1,0 +1,333 @@
+body{
+    background-color: rgb(32, 32, 32);
+    font-family: "Roboto", sans-serif;
+    min-height: 100vh;
+}
+.div-central{
+    background-color: rgb(37, 35, 49);
+    padding: 40px;
+    margin: 40px auto;
+    height: auto;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+} 
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+label{
+    width: 100%;
+    text-align: left;
+    color: #00b900;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+input{
+    background-color: rgb(45, 43, 58);
+    color: white;
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    outline: none;
+    transition: 0.3s;
+}
+input:focus{
+    background-color: rgb(39, 39, 39);
+    border-color: rgb(0, 185, 0);
+    }
+textarea{
+    background-color: rgb(45, 43, 58);
+    color: white;
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 300px;
+    border: 2px solid transparent;
+    outline: none;
+    transition: 0.3s;
+    margin-bottom: 15px;
+}
+
+textarea:focus{
+    background-color: rgb(39, 39, 39);
+    border-color: rgb(0, 185, 0);
+}
+
+.div-buttons{
+    width: 100%;
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: "Roboto", sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+.btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+    }
+        /* CORES DOS BOTÕES */
+.btn-save    { background-color: #2da44e; } /* Verde */
+.btn-delete  { background-color: #cf222e; } /* Vermelho */
+.btn-edit    { background-color: #d29922; } /* Laranja */
+.btn-neutral { background-color: #444c56; } /* Cinza */
+.hamburger {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.hamburger span{
+    display: block;
+    width: 30px;
+    height: 3px;
+    margin: 5px;
+    background-color: white;
+    transition: 0.4s ease;
+}
+.sidebar{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 250px;
+    height: 100%;
+    background-color: #252331;
+    transition: 0.4s ease;
+    padding-top: 60px;
+    transform: translateX(-100%);
+    z-index: 1000;
+}
+.sidebar.active{
+    transform: translateX(0);
+}
+.sidebar a{
+    display: block;
+    padding: 15px 25px;
+    border: 3px solid transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.4s;
+}
+.sidebar a:hover{
+    background-color: #2b2b2b;
+    padding-left: 35px;
+}
+.sidebar ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar li {
+    width: 100%;
+}
+.titulo-pagina{
+    margin-bottom: 30px;
+    padding: 20px 0;
+    background-color: #22202e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5);
+}
+.titulo-pagina h1{
+    margin: 0;
+    color: aliceblue;
+    text-align: center;
+    font-size: 1.8rem;
+}
+#container-clientes{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+}
+.card{
+    background-color: #252331;
+    color: white;
+    flex: calc(33% - 30px);
+    min-width: 250px;
+    max-width: 350px;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    border-left: 5px solid #19005f; /* Uma faixa lateral de cor */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.4);
+}
+.card .btn, .div-os .btn {
+    margin-top: 10px;
+    width: 100%; /* Por padrão no mobile */
+}
+.div-busca{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.barra-busca{
+    margin-top: 40px;
+    margin-bottom: 30px;
+    width: 30%;
+    max-width: 400px;
+}
+select {
+    background-color: rgb(45, 43, 58);
+    color: white;
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    outline: none;
+    cursor: pointer;
+    appearance: none; /* Remove a seta padrão do navegador para alguns sistemas */
+}
+select:focus {
+    border-color: rgb(0, 185, 0);
+}
+.div-aviso{
+    background-color: #252331;
+    border: 2px;
+    border-color: rgb(190, 0, 0);
+    border-radius: 12px;
+    color: white;
+    padding: 30px;
+    margin: 0 auto;
+}
+#container-todas-os{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+.div-os{
+    background-color: #252331;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    flex: calc(25% - 30px);
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    box-sizing: border-box;
+    min-width: 250px;
+    max-width: 350px;
+}
+.div-buttons-card {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Estrutura geral da tabela */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Une as bordas duplas em uma linha única */
+    background-color: #252525; /* Fundo cinza escuro combinando com o app */
+    color: #ffffff; /* Texto branco */
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    text-align: left;
+}
+
+/* Cabeçalho da Tabela (thead / th) */
+th {
+    background-color: #1a1a1a; /* Fundo ainda mais escuro para destacar o topo */
+    color: #00b900; /* O seu verde de destaque do sistema */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 15px;
+    border-bottom: 2px solid #444444; /* Linha divisória firme abaixo do cabeçalho */
+}
+
+/* Linhas e Células do Corpo (tbody / tr / td) */
+td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #333333; /* Linha sutil entre as vendas */
+    vertical-align: middle;
+}
+
+/* Efeito Zebrado (Linhas alternadas com tons levemente diferentes) */
+tbody tr:nth-child(even) {
+    background-color: #2d2d2d;
+}
+
+/* Efeito Hover (Destaca a linha onde o usuário passa o mouse por cima) */
+tbody tr:hover {
+    background-color: #383838;
+    transition: background-color 0.2s ease;
+}
+
+/* Alinhamento inteligente para valores financeiros (Últimas duas colunas) */
+table th:nth-child(3), table td:nth-child(3),
+table th:nth-child(4), table td:nth-child(4) {
+    text-align: right;
+}
+
+/* Ajuste fino para a mensagem de tabela vazia */
+table td[colspan="4"] {
+    text-align: center;
+    color: #888888;
+    font-style: italic;
+    padding: 30px;
+}
+
+/* Dá os mesmos superpoderes do formulário para as divs da OS */
+#bloco-manutencao, 
+#bloco-instalacao {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 15px; /* ISSO vai afastar os labels e inputs perfeitamente por igual */
+}
+
+@media (max-width: 800px){
+    .div-os{
+        padding: 10px;
+        min-width: 140px;
+        flex: calc(50% - 20px);
+    }
+}

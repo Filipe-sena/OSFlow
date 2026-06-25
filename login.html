@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="div-central">
+        <h2 id="titulo-tela" style="color: white; text-align: center;">Acessar sistema</h2>
+        <form id="form-auth">
+            <label style="color: white;" for="username">Username</label>
+            <input type="text" id="username" placeholder="Username" required>
+            <label style="color: white;" for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Senha" required>            
+            <button type="submit" id="btn-principal" class="btn btn-neutral">Entrar</button>
+            
+            <p style="color: gray; font-size: 14px; margin-top: 15px; text-align: center;">
+                Ainda não tem conta? 
+                <a href="#" id="link-alternar" style="color: #00b900; text-decoration: none;">Cadastrar-se</a>
+            </p>
+        </form>
+    </div>        
+
+    <script>
+        let modoCadastro = false
+        const formulario = document.querySelector('#form-auth')
+        const linkAlternar = document.querySelector('#link-alternar')
+        const titulo = document.querySelector('#titulo-tela')
+        const btnPrincipal = document.querySelector('#btn-principal')
+
+        linkAlternar.addEventListener('click', (e) => {
+            e.preventDefault()
+            modoCadastro = !modoCadastro
+
+            if(modoCadastro){
+                titulo.innerText = "Criar nova conta"
+                btnPrincipal.innerText = "Cadastrar"
+                linkAlternar.innerText = "Voltar para o login"
+            } else {
+                titulo.innerText = "Acessar osflow";
+                btnPrincipal.innerText = "Entrar";
+                linkAlternar.innerText = "Cadastrar-se";
+            }
+        })
+
+        formulario.addEventListener('submit', async (e) => {
+            e.preventDefault()
+
+            const inputUsername = document.querySelector('#username')
+            const inputSenha = document.querySelector('#senha')
+            const dadosFormulario = {
+                username: inputUsername.value,
+                senha: inputSenha.value
+            }
+
+            const rota = modoCadastro ? '/auth/register' : '/auth/login'
+
+            try{
+                const resposta = await fetch(`http://localhost:3000${rota}`, {
+                    method: 'POST',
+                    headers: {'Content-Type' : 'application/json'},
+                    body: JSON.stringify(dadosFormulario)
+                })
+
+                const dados = await resposta.json()
+
+                if(resposta.ok){
+                    if(modoCadastro){
+                        alert("Conta criada! Agora você já pode entrar.");
+                        linkAlternar.click(); // Volta para a tela de login
+                    } else{
+                        localStorage.setItem('token', dados.token)
+                        window.location.href = 'index.html'
+                    }
+                } else {
+                    alert(dados.message);
+                }
+            }catch(err){
+                console.error(err);
+                alert('Erro na requisição: ' + err.message);
+            }
+
+        })
+    </script>
+</body>
+</html>

@@ -5,7 +5,8 @@ const ClienteSchema = new mongoose.Schema({
     cpf: Number,
     descricao: String,
     telefone: {type: Number, required: true},
-    endereco: String
+    endereco: String,
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true }
 })
 
 module.exports = mongoose.model("Cliente", ClienteSchema)

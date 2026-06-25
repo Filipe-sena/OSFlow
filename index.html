@@ -7,264 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
-        body{
-            background-color: rgb(32, 32, 32);
-            font-family: "Roboto", sans-serif;
-            min-height: 100vh;
-        }
-        .div-central{
-            background-color: rgb(37, 35, 49);
-            padding: 40px;
-            margin: 40px auto;
-            height: auto;
-            width: 90%;
-            max-width: 450px;
-            border-radius: 20px;
-            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
-        } 
-        form{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        label{
-            width: 100%;
-            text-align: left;
-            color: #00b900;
-            font-size: 0.9rem;
-            margin-top: 15px;
-        }
-        input{
-            background-color: rgb(45, 43, 58);
-            color: white;
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            box-sizing: border-box;
-            border: 2px solid transparent;
-            outline: none;
-            transition: 0.3s;
-        }
-        input:focus{
-            background-color: rgb(39, 39, 39);
-            border-color: rgb(0, 185, 0);
-        }
-        textarea{
-            background-color: rgb(45, 43, 58);
-            color: white;
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            box-sizing: border-box;
-            resize: vertical;
-            min-height: 80px;
-            max-height: 300px;
-            border: 2px solid transparent;
-            outline: none;
-            transition: 0.3s;
-            margin-bottom: 15px;
-        }
-        textarea:focus{
-            background-color: rgb(39, 39, 39);
-            border-color: rgb(0, 185, 0);
-        }
-        .div-buttons{
-            width: 100%;
-            display: flex;
-            gap: 15px;
-        }
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: "Roboto", sans-serif;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        .btn:hover {
-            filter: brightness(1.2);
-            transform: translateY(-2px);
-        }
-        /* CORES DOS BOTÕES */
-        .btn-save    { background-color: #2da44e; } /* Verde */
-        .btn-delete  { background-color: #cf222e; } /* Vermelho */
-        .btn-edit    { background-color: #d29922; } /* Laranja */
-        .btn-neutral { background-color: #444c56; } /* Cinza */
-        .hamburger {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .hamburger span{
-            display: block;
-            width: 30px;
-            height: 3px;
-            margin: 5px;
-            background-color: white;
-            transition: 0.4s ease;
-        }
-        .sidebar{
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 250px;
-            height: 100%;
-            background-color: #252331;
-            transition: 0.4s ease;
-            padding-top: 60px;
-            transform: translateX(-100%);
-            z-index: 1000;
-        }
-        .sidebar.active{
-            transform: translateX(0);
-        }
-        .sidebar a{
-            display: block;
-            padding: 15px 25px;
-            border: 3px solid transparent;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.4s;
-        }
-        .sidebar a:hover{
-            background-color: #2b2b2b;
-            padding-left: 35px;
-        }
-        .sidebar ul{
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .sidebar li {
-            width: 100%;
-        }
-        .titulo-pagina{
-            margin-bottom: 30px;
-            padding: 20px 0;
-            background-color: #22202e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.5);
-        }
-        .titulo-pagina h1{
-            margin: 0;
-            color: aliceblue;
-            text-align: center;
-            font-size: 1.8rem;
-        }
-        #container-clientes{
-            width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-            gap: 20px;
-        }
-        .card-cliente{
-            background-color: #252331;
-            color: white;
-            flex: calc(33% - 30px);
-            min-width: 250px;
-            max-width: 350px;
-            padding: 15px;
-            margin: 20px;
-            border-radius: 12px;
-            box-sizing: border-box;
-            border-left: 5px solid #19005f; /* Uma faixa lateral de cor */
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card-cliente:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.4);
-        }
-        .card-cliente .btn, .div-os .btn {
-            margin-top: 10px;
-            width: 100%; /* Por padrão no mobile */
-        }
-        .div-busca{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .barra-busca{
-            margin-top: 40px;
-            margin-bottom: 30px;
-            width: 30%;
-            max-width: 400px;
-        }
-        select {
-            background-color: rgb(45, 43, 58);
-            color: white;
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            box-sizing: border-box;
-            border: 2px solid transparent;
-            outline: none;
-            cursor: pointer;
-            appearance: none; /* Remove a seta padrão do navegador para alguns sistemas */
-        }
-        select:focus {
-            border-color: rgb(0, 185, 0);
-        }
-        .div-aviso{
-            background-color: #252331;
-            border: 2px;
-            border-color: rgb(190, 0, 0);
-            border-radius: 12px;
-            color: white;
-            padding: 30px;
-            margin: 0 auto;
-        }
-        #container-todas-os{
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-            padding: 20px;
-            gap: 20px;
-        }
-        .div-os{
-            background-color: #252331;
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            flex: calc(25% - 30px);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
-            box-sizing: border-box;
-            min-width: 250px;
-            max-width: 350px;
-        }
-        .div-buttons-card {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            margin-top: 15px;
-        }
-        @media (max-width: 800px){
-            .div-os{
-                padding: 10px;
-                min-width: 140px;
-                flex: calc(50% - 20px);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <section id="tela-principal">
@@ -299,32 +42,61 @@
         <div class="titulo-pagina">
             <h1 style="color: white; text-align: center;">Ordem de Serviço</h1>
         </div>
-   
+
         <div id="os" class="div-central">
-            <form id="form-os" action="">
+            <label for="select-tipo-os">Tipo de Serviço</label>
+            <select id="select-tipo-os" >
+                <option value="">-- Selecione o Tipo de Serviço --</option>
+                <option value="manutencao">Manutenção / Reparo de Produto (Oficina)</option>
+                <option value="instalacao">Instalação / Serviço Externo</option>
+            </select>
+
+            <form id="form-os" action="" style="display: none;">
+                
                 <label for="select-status-os" style="text-align: center;">Status da Ordem de serviço</label>
-                <select id="select-status-os" style="width: 200px; display: flex;">
+                <select id="select-status-os" style="display: flex;">
                     <option value="orcamento">Em orçamento</option>
                     <option value="andamento">Em andamento</option>
                     <option value="pagamento">Aguardando pagamento</option>
                     <option value="concluido">Concluído</option>
                 </select>
+
                 <label for="select-clientes">Selecionar Cliente</label>
                 <select id="select-clientes">
                     <option value="">Selecione um cliente</option>
                 </select>
-                <label for="produto">Descrição do produto</label>
-                <input type="text" id="produto" placeholder="Produto" required>
-                <textarea name="" id="observacao" placeholder="Oberservações" required></textarea>
-                <label for="relato">Problema apresentado</label>
-                <textarea name="" id="relato" placeholder="Relato do cliente" required></textarea>
-                <textarea name="" id="laudo" placeholder="Laudo técnico"></textarea>
+
+                <div id="bloco-manutencao">
+                    <label for="produto">Descrição do produto</label>
+                    <input type="text" id="produto" placeholder="Produto">
+                    
+                    <label for="observacao">Observações</label>
+                    <textarea name="" id="observacao" placeholder="Observações"></textarea>
+                    
+                    <label for="relato">Problema apresentado</label>
+                    <textarea name="" id="relato" placeholder="Relato do cliente"></textarea>
+                    
+                    <label for="laudo">Laudo técnico</label>
+                    <textarea name="" id="laudo" placeholder="Laudo técnico"></textarea>
+                    
+                    <label for="data-entrega">Data prevista para entrega</label>
+                    <input id="data-entrega" type="date">
+                </div>
+
+                <div id="bloco-instalacao" style="display: none;">
+                    <label for="instalacao-descricao">Descrição do Serviço / Projeto</label>
+                    <textarea id="instalacao-descricao" placeholder="Serviço"></textarea>
+                    
+                    <label for="valor-mao-de-obra">Valor da Mão de Obra</label>
+                    <input type="number" id="valor-mao-de-obra" placeholder="R$ 0,00">
+                </div>
+
                 <label for="valor">Valor a cobrar:</label>
-                <input type="number" id="valor" placeholder="R$">
+                <input type="number" id="valor" placeholder="R$0,00">
+
                 <label for="data-recebimento">Data de recebimento</label>
                 <input type="date" id="data-recebimento" required>
-                <label for="data-entrega">Data prevista para entrega</label>
-                <input id="data-entrega" type="date" required>
+
                 <div class="div-buttons">
                     <button type="reset" id="reset-os" class="btn btn-delete">Limpar</button>
                     <button type="submit" id="save-os" class="btn btn-save">Salvar</button>
@@ -371,6 +143,85 @@
         <div id="container-todas-os"></div>        
     </section>
 
+    <section id="tela-cadastro-produtos" style="display: none;">
+        <div class="titulo-pagina">
+            <h1>Cadastre seus produtos</h1>
+        </div>
+        <div class="div-central">
+            <form id="form-produtos">
+                <label for="nome-produto"></label>
+                <input type="text" id="nome-produto" placeholder="Produto" required>
+                <label for="descricao-produto"></label>
+                <input type="text" id="descricao-produto" placeholder="Descrição" >
+                <label for="valor-compra">Valor de compra</label>
+                <input type="text" id="valor-compra" placeholder="R$ 0,00" required>
+                <label for="valor-venda">Valor de venda</label>
+                <input type="text" id="valor-venda" placeholder="R$ 0,00" required>
+                <label for="estoque">Estoque</label>
+                <input type="number" id="estoque" placeholder="Quantidade">
+                <div class="div-buttons">
+                    <button type="submit" class="btn btn-save">Salvar</button>
+                    <button type="reset" class="btn btn-delete">Limpar</button>                    
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="tela-todos-produtos" style="display: none;">
+        <div class="titulo-pagina">
+            <h1>Produtos cadastrados</h1>
+        </div>
+        <div id="container-todos-produtos"></div>
+    </section>
+
+    <section id="tela-vendas" style="display: none;">
+        <div class="titulo-pagina">
+            <h1>Registre suas vendas</h1>
+        </div>
+        
+        <div class="div-central">
+            <form id="form-vendas">
+                <select id="select-produtos" required>
+                    <option value="">Selecione um produto</option>
+                </select>
+                <label for="data-venda">Data da Venda</label>
+                <input type="date" id="data-venda" required>
+                <label for="valor-compra-produto">Valor de compra</label>
+                <input type="text" id="valor-compra-produto" placeholder="R$0,00" required>
+                <label for="valor-venda-produto">Valor de venda</label>
+                <input type="text" id="valor-venda-produto" placeholder="R$0,00"required>
+                <div class="div-buttons">
+                    <button type="submit" class="btn btn-save">Registrar</button>
+                    <button type="reset" class="btn btn-delete">Limpar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="tela-historico-vendas" style="display: none;">
+        <div class="titulo-pagina">
+            <h1>Histórico de vendas</h1>
+        </div>
+        <div id="container-vendas"></div>
+
+        <div id="aba-historico-vendas">
+            <div class="tabela-responsiva">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Produto/Serviço</th>
+                            <th>Valor Cobrado</th>
+                            <th>Lucro</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-tabela-vendas">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <button id="menuButton" class="hamburger">
         <span></span>
         <span></span>
@@ -398,65 +249,178 @@
                     <li><a id="link-clientes" href="#" style="padding-left: 50px; font-size: 0.9rem;">Clientes cadastrados</a></li>
                 </ul>
             </li>
+            
+            <li>
+                <li><a id="btn-submenu-produtos" href="#">
+                    Produtos <span>▼</span>
+                </a></li>
+                <ul id="submenu-produtos" style="display: none; background-color: #1a1824;">
+                    <li><a id="link-cadastro-produtos" href="#" style="padding-left: 50px; font-size: 0.9rem;">Cadastrar Produto</a></li>
+                    <li><a id="link-todos-produtos" href="#" style="padding-left: 50px; font-size: 0.9rem;">Produtos cadastrados</a></li>
+                </ul>
+            </li> 
+            
+            <li>
+                <li><a id="btn-submenu-vendas" href="#">
+                    Vendas <span>▼</span>
+                </a></li>
+                <ul id="submenu-vendas" style="display: none; background-color: #1a1824;">
+                    <li><a id="link-vendas" href="#" style="padding-left: 50px; font-size: 0.9rem;">Registrar venda</a></li>
+                    <li><a id="link-historico-vendas" href="#" style="padding-left: 50px; font-size: 0.9rem;">Histórico de vendas</a></li>
+                </ul>
+            </li>
 
         </ul>
     </nav>
 
     <script>
+    const selectTipoOs = document.querySelector('#select-tipo-os');
+    const formOs = document.querySelector('#form-os');
+    const blocoManutencao = document.querySelector('#bloco-manutencao');
+    const blocoInstalacao = document.querySelector('#bloco-instalacao');
+
+    selectTipoOs.addEventListener('change', () => {
+        const tipoSelecionado = selectTipoOs.value;
+
+        // Se o usuário não escolheu nenhum tipo, esconde o formulário
+        if (!tipoSelecionado) {
+            formOs.style.display = "none";
+            return;
+        }
+
+        // Mostra o formulário
+        formOs.style.display = "flex";
+
+        if (tipoSelecionado === 'manutencao') {
+            blocoManutencao.style.display = "flex";   // Mostra a tela do seu irmão com seus IDs originais
+            blocoInstalacao.style.display = "none";    // Esconde a do seu pai
+            
+            // Aplica o required apenas nos campos obrigatórios do seu irmão
+            document.querySelector('#produto').required = true;
+            document.querySelector('#relato').required = true;
+            document.querySelector('#data-entrega').required = true;
+            document.querySelector('#instalacao-descricao').required = false;
+        } 
+        else if (tipoSelecionado === 'instalacao') {
+            blocoInstalacao.style.display = "flex";   // Mostra a tela de instalação do seu pai
+            blocoManutencao.style.display = "none";    // Esconde a do seu irmão
+            
+            // Remove a obrigatoriedade dos campos do seu irmão e foca na instalação
+            document.querySelector('#produto').required = false;
+            document.querySelector('#relato').required = false;
+            document.querySelector('#data-entrega').required = false;
+            document.querySelector('#instalacao-descricao').required = true;
+        }
+    });
+
+        let listaDeProdutosGlobal = [];
+
         const formOS = document.querySelector('#form-os');
         formOS.addEventListener('submit', async (evento) => {
             evento.preventDefault();
+            const token = localStorage.getItem('token');
             
+            // 1. Captura o tipo selecionado no select do topo
+            const tipoServico = document.querySelector('#select-tipo-os').value;
+
+            // 2. Monta o objeto inicial com as informações gerais (que servem para os dois)
             let dadosOS = {
+                tipo: tipoServico, // Identifica se é 'manutencao' ou 'instalacao'
                 status: document.querySelector('#select-status-os').value,
-                cliente : document.querySelector('#select-clientes').value,
-                produto : document.querySelector('#produto').value,
-                observacao : document.querySelector('#observacao').value,
-                relato : document.querySelector('#relato').value,
-                laudo : document.querySelector('#laudo').value,
+                cliente: document.querySelector('#select-clientes').value,
                 dataRecebimento: document.querySelector('#data-recebimento').value,
-                dataEntrega: document.querySelector('#data-entrega').value,
-                valor : document.querySelector('#valor').value
+                valor: converterParaNumero(document.querySelector('#valor').value) // MODIFICAÇÃO: Tratado para salvar como Number puro
             };
 
-            if(editandoIndiceOs !== null){
-                try{
+            // 3. Adiciona os campos específicos dependendo da escolha feita
+            if (tipoServico === 'manutencao') {
+                dadosOS.produto = document.querySelector('#produto').value;
+                dadosOS.observacao = document.querySelector('#observacao').value;
+                dadosOS.relato = document.querySelector('#relato').value;
+                dadosOS.laudo = document.querySelector('#laudo').value;
+                dadosOS.dataEntrega = document.querySelector('#data-entrega').value;
+                
+                // MODIFICAÇÃO: Garante o envio do número 0 ao invés de string vazia para o banco não recusar
+                dadosOS.instalacaoDescricao = "";
+                dadosOS.valorMaoDeObra = 0; 
+            } 
+            else if (tipoServico === 'instalacao') {
+                // Coleta as informações da tela do seu pai
+                dadosOS.instalacaoDescricao = document.querySelector('#instalacao-descricao').value;
+                dadosOS.valorMaoDeObra = converterParaNumero(document.querySelector('#valor-mao-de-obra').value); // MODIFICAÇÃO: Tratado para salvar como Number puro
+                
+                // Deixa os campos de produto físico vazios ou com valores padrão para não quebrar o backend
+                dadosOS.produto = "Serviço de Instalação";
+                dadosOS.observacao = "";
+                dadosOS.relato = "";
+                dadosOS.laudo = "";
+                dadosOS.dataEntrega = null; // Envia nulo para campos de data não dar conflito de string vazia
+            }
+
+            // =======================================================================
+            // A partir daqui, o seu fluxo de envio (PUT e POST) continua idêntico!
+            // =======================================================================
+            if (editandoIndiceOs !== null) {
+                try {
                     const resposta = await fetch(`http://localhost:3000/os/${editandoIndiceOs}`, {
-                        method : 'PUT',
-                        headers:{
-                            'Content-type':'application/json'
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
                         },
                         body: JSON.stringify(dadosOS)
-                    })
+                    });
 
-                    if(resposta.ok){
-                        alert(`A OS do produto ${dadosOS.produto} foi atualizada com sucesso`);
+                    if (resposta.status === 401) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    if (resposta.ok) {
+                        // Se for instalação exibe o texto genérico, senão exibe o nome do produto original
+                        const identificadorOS = tipoServico === 'manutencao' ? dadosOS.produto : 'Instalação';
+                        alert(`A OS de ${identificadorOS} foi atualizada com sucesso`);
+                        
                         editandoIndiceOs = null;
                         formOS.reset();
+                        document.querySelector('#select-tipo-os').value = ""; // Reseta o tipo de OS também
+                        formOS.style.display = "none"; // Esconde o formulário até escolherem o tipo novamente
                         linkTodasOs.click();
                     }
                 }
-                catch(err){
-                    alert("Erro ao processar requisição")
+                catch (err) {
+                    alert("Erro ao processar requisição");
                 }
             } 
-            else{
-                try{
-                    const resposta = await fetch('http://localhost:3000/os', {
+            else {
+                try {
+                    const resposta = await fetch('http://localhost:3000/os/', {
                         method: 'POST',
-                        headers:{
-                            'Content-Type':'application/json'
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
                         },
                         body: JSON.stringify(dadosOS)
-                    })
-                    if(resposta.ok){
-                        const resultado = await resposta.json()
-                        alert(`A ordem de serviço do produto ${resultado.produto} foi salva.`)
-                        formOS.reset()
+                    });
+
+                    if (resposta.status === 401) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    if (resposta.ok) {
+                        const resultado = await resposta.json();
+                        alert(`A ordem de serviço de ${resultado.tipo === 'manutencao' ? resultado.produto : 'Instalação'} foi salva.`);
+                        formOS.reset();
+                        document.querySelector('#select-tipo-os').value = ""; // Reseta o tipo de OS
+                        formOS.style.display = "none"; // Oculta o form após salvar
+                    } else {
+                        const erroServidor = await resposta.json();
+                        alert(`Erro 400 do Servidor:\n${erroServidor.message || ''}\nDetalhes: ${JSON.stringify(erroServidor.erro || erroServidor)}`);
                     }
                 }
-                catch (err){
-                    alert(`Ocorreu um erro no servidor`)
+                catch (err) {
+                    alert(`Ocorreu um erro no servidor`);
                 }      
             }
         });
@@ -469,6 +433,8 @@
             const descricaoDigitado = document.querySelector('#descricao').value;
             const telefoneDigitado = document.querySelector('#telefone').value;
             const enderecoDigitado = document.querySelector('#endereco').value;
+
+            const token = localStorage.getItem('token')
             
             const cliente = {
                 nome : nomeDigitado,
@@ -483,7 +449,8 @@
                     const resposta = await fetch('http://localhost:3000/cliente', {
                         method: 'POST',
                         headers: {
-                            'Content-type': 'application/json'
+                            'Content-type': 'application/json',
+                            'Authorization': token
                         },
                         body: JSON.stringify(cliente)
                     })
@@ -502,7 +469,8 @@
                     const resposta = await fetch(`http://localhost:3000/cliente/${editandoIndiceCliente}`, {
                         method: "PUT",
                         headers: {
-                            'Content-Type' : 'application/json'
+                            'Content-Type' : 'application/json',
+                            'Authorization': token
                         },
                         body: JSON.stringify(cliente)
                     })
@@ -516,6 +484,152 @@
                 catch(err){
                     alert('Não foi possível se comunicar com o servidor')
                 }
+            }
+        });
+
+        const formProdutos = document.querySelector('#form-produtos')
+        formProdutos.addEventListener('submit', async (evento) => {
+            evento.preventDefault()
+
+            const nomeProduto = document.querySelector('#nome-produto').value
+            const descricaoProduto = document.querySelector('#descricao-produto').value
+            const valorCompraDigitado = document.querySelector('#valor-compra').value
+            const valorVendaDigitado = document.querySelector('#valor-venda').value
+            const estoqueDigitado = document.querySelector('#estoque').value
+            const produto = {
+                produto: nomeProduto,
+                descricao: descricaoProduto,
+                valorCompra: converterParaNumero(valorCompraDigitado) ,
+                valorVenda: converterParaNumero(valorVendaDigitado),
+                estoque: estoqueDigitado
+            }
+
+            const token = localStorage.getItem('token')
+
+            try{
+                const resposta = await fetch('http://localhost:3000/produto',{
+                    method: 'POST',
+                    headers : {
+                        "Authorization" : token,
+                        "Content-Type" : "application/json"
+                    },
+                    body : JSON.stringify(produto)
+                })
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert("Sessão expirada. Faça login novamente.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if(resposta.ok){
+                    alert(`O produto ${produto.produto} foi cadastrado com sucesso`)
+                    formProdutos.reset
+                }
+                else {
+                    // Caso o servidor responda com erro 400 (ex: falta de campo obrigatório)
+                    const erroDados = await resposta.json()
+                    alert(`Erro do servidor: ${erroDados.message} ${erroDados.erro}`)
+                }
+            } catch(err){
+                console.error("Erro na requisição:", err)
+                alert("Não foi possível se conectar ao servidor")
+            }
+        })
+
+        const formVendas = document.querySelector('#form-vendas');
+
+        // Adicionado o parâmetro 'e' para podermos controlar o comportamento do formulário
+        formVendas.addEventListener('submit', async (e) => { 
+            e.preventDefault(); // CRUCIAL: Evita que a página recarregue e limpe o console antes do fetch terminar
+
+            // 1. Captura os elementos e textos corretos
+            const selectProdutos = document.querySelector('#select-produtos');
+            const produtoNome = selectProdutos.options[selectProdutos.selectedIndex].text; // Pega o NOME do produto em vez do ID
+            
+            // CORREÇÃO: Adicionado o .value para pegar o texto real de dentro dos inputs
+            const dataVendaDigitado = document.querySelector('#data-venda').value;
+            const valorCompraTexto = document.querySelector('#valor-compra-produto').value;
+            const valorVendaTexto = document.querySelector('#valor-venda-produto').value;
+
+            // 2. Converte os valores com a máscara de "R$" para números decimais puros
+            const valorCompraNumerico = converterParaNumero(valorCompraTexto);
+            const valorCobradoNumerico = converterParaNumero(valorVendaTexto);
+
+            // 3. Calcula o lucro matemático real baseado em números limpos
+            const lucroCalculado = valorCobradoNumerico - valorCompraNumerico;
+
+            // 4. Monta o objeto exatamente como seu Model Venda.js espera no Mongoose
+            const venda = {
+                data: dataVendaDigitado,
+                produto: produtoNome,
+                valorDeCompra: valorCompraNumerico,
+                valorCobrado: valorCobradoNumerico,
+                lucro: lucroCalculado
+            };
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const resposta = await fetch('http://localhost:3000/venda', {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(venda) // Agora o JSON vai completo e com números perfeitos!
+                });
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert("Sessão expirada. Faça login novamente.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (resposta.ok) {
+                    alert(`A venda do produto "${venda.produto}" foi registrada com sucesso!`);
+                    formVendas.reset(); // CORREÇÃO: Faltavam os parênteses '()' para executar a limpeza do formulário
+                    
+                    // Se você tiver a função de repor a data de hoje criada anteriormente, chame ela aqui:
+                    if (typeof definirDataAtual === "function") {
+                        definirDataAtual();
+                    }
+                } else {
+                    const erroDados = await resposta.json();
+                    alert(`Erro do servidor: ${erroDados.message}. ${erroDados.erro || ''}`);
+                }
+            } catch (err) {
+                console.error("Erro na requisição:", err);
+                alert("Não foi possível se conectar ao servidor");
+            }
+        });
+
+        const selectProdutosVenda = document.querySelector('#select-produtos');
+        const inputValorVendaForm = document.querySelector('#valor-venda-produto'); // Ajuste com o ID real do input de preço da tela de vendas
+        const inputValorCompraForm = document.querySelector('#valor-compra-produto');
+
+        selectProdutosVenda.addEventListener('change', () => {
+            const idProdutoSelecionado = selectProdutosVenda.value;
+
+            // Se o usuário selecionou a opção vazia "Selecione um produto..."
+            if (!idProdutoSelecionado) {
+                inputValorVendaForm.value = "";
+                return;
+            }
+
+            // Procura o produto completo dentro da nossa lista global pelo ID
+            const produtoEncontrado = listaDeProdutosGlobal.find(prod => prod._id === idProdutoSelecionado);
+
+            if (produtoEncontrado) {
+                inputValorCompraForm.value = Number(produtoEncontrado.valorCompra).toLocaleString('pt-BR', { 
+                    style: 'currency', 
+                    currency: 'BRL' 
+                });
+
+                inputValorVendaForm.value = Number(produtoEncontrado.valorVenda).toLocaleString('pt-BR', { 
+                    style: 'currency', 
+                    currency: 'BRL' 
+                });
             }
         });
 
@@ -551,11 +665,37 @@
             }
         });
 
+        const btnSubmenuProduto = document.querySelector('#btn-submenu-produtos');
+        const submenuProduto = document.querySelector('#submenu-produtos');
+        btnSubmenuProduto.addEventListener('click', (e) => {
+            e.preventDefault(); // Impede a página de pular
+            if (submenuProduto.style.display === 'none') {
+                submenuProduto.style.display = 'block';
+                btnSubmenuProduto.querySelector('span').innerText = '▲';
+            } else {
+                submenuProduto.style.display = 'none';
+                btnSubmenuProduto.querySelector('span').innerText = '▼';
+            }
+        });
+
+        const btnSubmenuVendas = document.querySelector('#btn-submenu-vendas');
+        const submenuVendas = document.querySelector('#submenu-vendas');
+        btnSubmenuVendas.addEventListener('click', (e) => {
+            e.preventDefault(); // Impede a página de pular
+            if (submenuVendas.style.display === 'none') {
+                submenuVendas.style.display = 'block';
+                btnSubmenuVendas.querySelector('span').innerText = '▲';
+            } else {
+                submenuVendas.style.display = 'none';
+                btnSubmenuVendas.querySelector('span').innerText = '▼';
+            }
+        });
+
         // Fechar a sidebar ao clicar em qualquer link de dentro dela
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', () => {
                 // Se não for o botão do submenu, fecha a barra
-                if(link.id !== 'btn-submenu-os' && link.id !== 'btn-submenu-clientes') {
+                if(link.id !== 'btn-submenu-os' && link.id !== 'btn-submenu-clientes' && link.id !== 'btn-submenu-produtos' && link.id !== 'btn-submenu-vendas') {
                     sidebar.classList.remove('active');
                 }
             });
@@ -570,6 +710,13 @@
         opcoesExibicao2.addEventListener('change', () => {
             renderizarOs();
         })
+
+        const inputCompra = document.querySelector('#valor-compra');
+        const inputVenda = document.querySelector('#valor-venda');
+
+        // Ativa a formatação em tempo real ao digitar
+        inputCompra.addEventListener('input', () => formatarMoeda(inputCompra));
+        inputVenda.addEventListener('input', () => formatarMoeda(inputVenda));
 
         const linkOS = document.querySelector('#link-os');
         linkOS.addEventListener('click', () => {
@@ -607,15 +754,55 @@
             document.querySelector('#tela-principal').style.display = 'block';
         });
 
+        const linkCadastroProdutos = document.querySelector('#link-cadastro-produtos')
+        linkCadastroProdutos.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+            document.querySelector('#tela-cadastro-produtos').style.display = 'block';
+        });
+
+        const linkTodosProdutos = document.querySelector('#link-todos-produtos')
+        linkTodosProdutos.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-todos-produtos').style.display = 'block'
+            renderizarProdutos()
+        })
+
+        const linkVendas = document.querySelector('#link-vendas')
+        linkVendas.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-vendas').style.display = "block"
+            exibirProdutos()
+            definirDataAtual()
+        })
+
+        const linkHistoricoVendas = document.querySelector('#link-historico-vendas')
+        linkHistoricoVendas.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(pag => pag.style.display = "none")
+            document.querySelector('#tela-historico-vendas').style.display = "block"
+            renderizarTabelaVendas()
+        })
+
 
         /*  ////////////SEÇÃO PARA AS FUNÇÕES //////////////*/
 
         async function renderizarClientes() {
             const container = document.querySelector('#container-clientes');
             container.innerHTML = "";
+            const token = localStorage.getItem('token')
 
             try{
-                const resposta = await fetch('http://localhost:3000/cliente');
+                const resposta = await fetch('http://localhost:3000/cliente', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (resposta.status === 401 || resposta.status === 403) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 if(resposta.ok){
                     const clientes = await resposta.json()
                     if (clientes.length === 0) {
@@ -628,7 +815,7 @@
 
                     clientes.forEach((cliente) => {
                         const cartao = document.createElement('div');
-                        cartao.classList.add('card-cliente');
+                        cartao.classList.add('card');
 
                         cartao.innerHTML = `
                             <h3>${cliente.nome}</h3>
@@ -652,7 +839,14 @@
         let editandoIndiceCliente = null;
         async function editarCliente(id){
             try{
-                const resposta = await fetch('http://localhost:3000/cliente')
+                const token = localStorage.getItem('token')
+                const resposta = await fetch('http://localhost:3000/cliente',{
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    }
+                })
                 if(resposta.ok){
                     const listaClientes = await resposta.json()
                     const cliente = listaClientes.find(item => item._id === id)
@@ -684,10 +878,27 @@
             const criterio1 = document.querySelector('#select-opcoes-exibicao').value;
             const criterio2 = document.querySelector('#select-opcoes-2').value;
             const containerListaOs = document.querySelector('#container-todas-os');
+
+            const token = localStorage.getItem('token')
+
             containerListaOs.innerHTML = ""
             
             try{
-                const resposta= await fetch('http://localhost:3000/os')
+                const resposta= await fetch('http://localhost:3000/os', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token, // Envia o crachá para o servidor
+                        'Content-Type': 'application/json'
+                    }
+                })
+
+                // Se o servidor responder que não está autorizado (401 ou 403)
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert("Sessão expirada. Por favor, faça login novamente.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
                 if(resposta.ok){
                     const listaOS = await resposta.json()
                     listaOsFiltrada = listaOS.filter(os => {
@@ -714,7 +925,7 @@
                         if (criterio2 === "nova"){
                             return dataRecebimentoB - dataRecebimentoA;
                         }
-                        if (criterio2 ==="velha"){
+                        if (criterio2 ==="antiga"){
                             return dataRecebimentoA - dataRecebimentoB;
                         }
                         if (criterio2 ==="prazo"){
@@ -725,13 +936,15 @@
                     listaOsFiltrada.forEach((os) => {
                         const divOS = document.createElement('div');
                         divOS.classList.add('div-os')
-                        divOS.innerHTML = `s
-                            <h1 style="color: #00b900; margin-bottom: 10px;">${os.produto}</h1>
+                        divOS.innerHTML = `
+                            <h3 style="color: #00b900; margin-bottom: 10px;"> OS ${os.numero_os}</h3>
+                            <h1>${os.produto}</h1>
                             <p><strong>Cliente:</strong> ${os.cliente}</p>
                             <p><strong>Valor:</strong> R$ ${os.valor}</p>
                             <div class="div-buttons-card">
                                 <button class="btn btn-delete" onclick="excluirOs('${os._id}')">Excluir</button>
                                 <button class="btn btn-edit" onclick="editarOs('${os._id}')">Editar</button>
+                                <button class="btn btn-neutral" onclick="gerarPdf('${os._id}')">PDF</button>
                             </div>
                         `;
                         containerListaOs.appendChild(divOS);
@@ -751,7 +964,14 @@
             exibirClientes();
 
             try{
-                const resposta = await fetch('http://localhost:3000/os');
+                const token = localStorage.getItem('token')
+                const resposta = await fetch('http://localhost:3000/os',{
+                    method: "GET",
+                    headers:{
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    }
+                })
                 const listaOS = await resposta.json();
                 const os = listaOS.find(item => item._id === id);
                 
@@ -775,6 +995,117 @@
             }
         }
 
+        async function renderizarProdutos(){
+            const containerProdutos = document.querySelector('#container-todos-produtos')
+            containerProdutos.innerHTML = ""
+
+            const token = localStorage.getItem('token')
+
+            try{
+                const resposta = await fetch('http://localhost:3000/produto', {
+                    method: "GET",
+                    headers: {
+                        "Authorization": token,
+                        "Content-type": "application/json"
+                    }
+                })
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert("Sessão expirada. Por favor, faça login novamente.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                if(resposta.ok){
+                    const listaProdutos = await resposta.json()
+
+                    if (listaProdutos.length === 0) {
+                        const aviso = document.createElement('div');
+                        aviso.classList.add('div-aviso');
+                        aviso.innerHTML = `<h3>Não há produtos cadastrados</h3>`;
+                        containerProdutos.appendChild(aviso);
+                        return;
+                    }
+
+                    listaProdutos.forEach((produto) => {
+                        const divProduto = document.createElement('div')
+                        divProduto.classList.add('card')
+                        divProduto.innerHTML = `
+                        <h2>${produto.produto}</h2>
+                        <p>${produto.descricao || 'Sem descrição'}</p>
+                        <p>Preço de Compra: ${Number(produto.valorCompra).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                        <p>Preço de Venda: ${Number(produto.valorVenda).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                        <p>Estoque: ${produto.estoque} uni.</p>
+                        `
+                        containerProdutos.appendChild(divProduto)
+                    })
+                }
+            } catch(err){
+                alert('Erro ao se conectar com o servidor ', err)
+            }
+        } 
+
+
+        async function renderizarTabelaVendas() {
+            const corpoTabela = document.querySelector('#corpo-tabela-vendas');
+            corpoTabela.innerHTML = ""; // Limpa a tabela antes de desenhar
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const resposta = await fetch('http://localhost:3000/venda', {
+                    method: "GET",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert("Sessão expirada. Por favor, faça login novamente.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                if (resposta.ok) {
+                    const listaDeVendas = await resposta.json();
+
+                    if (listaDeVendas.length === 0) {
+                        corpoTabela.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhuma venda registrada.</td></tr>`;
+                        return;
+                    }
+
+                    listaDeVendas.forEach(venda => {
+                        const linha = document.createElement('tr');
+
+                        // 1. Formata a data para o padrão brasileiro (DD/MM/AAAA)
+                        const dataFormatada = new Date(venda.data).toLocaleDateString('pt-BR');
+
+                        // 2. Formata os valores para R$ 0,00 tratando caso venham vazios
+                        const valorCobradoFormatado = Number(venda.valorCobrado || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        const lucroFormatado = Number(venda.lucro || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                        // 3. Define a cor do lucro (se for positivo fica verde, se for prejuízo fica vermelho)
+                        const corLucro = venda.lucro >= 0 ? 'green' : 'red';
+
+                        // 4. Monta as colunas da linha (Apenas com o que importa!)
+                        linha.innerHTML = `
+                            <td>${dataFormatada}</td>
+                            <td>${venda.produto || 'Produto não identificado'}</td>
+                            <td>${valorCobradoFormatado}</td>
+                            <td style="color: ${corLucro}; font-weight: bold;">${lucroFormatado}</td>
+                        `;
+
+                        // 5. Adiciona a linha dentro do corpo da tabela
+                        corpoTabela.appendChild(linha);
+                    });
+                }
+            } catch (err) {
+                console.error("Erro detalhado na requisição:", err); 
+                alert('Erro ao se conectar com o servidor');
+            }
+        }
+            
         async function excluirCliente(id) {
             if(!confirm('Tem certeza de que deseja excliuir este cliente?')){return}
             try{
@@ -818,7 +1149,14 @@
         const inputBusca = document.querySelector('#barra-busca');
         inputBusca.addEventListener('input', async () => {
             try{
-                const resposta = await fetch('http://localhost:3000/cliente')
+                const token = localStorage.getItem('token')
+                const resposta = await fetch('http://localhost:3000/cliente',{
+                    method: "GET",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type" : "application/json"
+                    }
+                })
                 if(resposta.ok){
                     const todosClientes = await resposta.json()
                     const valorBusca = inputBusca.value.toLowerCase();
@@ -843,28 +1181,42 @@
 
             clientesFiltrados.forEach((cliente, index) => {
                 const cartao = document.createElement('div');
-                cartao.classList.add('card-cliente');
+                cartao.classList.add('card');
                 cartao.innerHTML = `
                 <h3>${cliente.nome}</h3>
                 <p>CPF: ${cliente.cpf}</p>
                 <p>Tel: ${cliente.telefone}</p>
-                <button class="btn btn-delete" onclick="excluirCliente(${index})">Excluir</button>
-                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico de OS</button>
+                <button class='btn btn-delete' onclick="excluirCliente('${cliente._id}')">Excluir</button>
+                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
+                <button class="btn btn-edit" onclick="editarCliente('${cliente._id}')">Editar</button>
                 `;
                 containerClientes.appendChild(cartao);
             });
         };
 
         async function exibirClientes() {
+            const token = localStorage.getItem('token')
             const select = document.querySelector('#select-clientes');
             select.innerHTML = '<option value="">Selecione um cliente</option>'
             try{
-                const resposta = await fetch('http://localhost:3000/cliente')
+                const resposta = await fetch('http://localhost:3000/cliente', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                })
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 if(resposta.ok){
                     const clientes = await resposta.json()
                     clientes.forEach(cliente => {
                         const option = document.createElement('option');
-                        option.value = cliente.nome;
+                        option.value = cliente._id;
                         option.textContent = cliente.nome;
                         select.appendChild(option);
                     })  
@@ -875,6 +1227,39 @@
             }
         };
 
+        async function exibirProdutos() {
+            const token = localStorage.getItem('token')
+            const select = document.querySelector('#select-produtos');
+            select.innerHTML = '<option value="">Selecione um produto</option>'
+            try{
+                const resposta = await fetch('http://localhost:3000/produto', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    }
+                })
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if(resposta.ok){
+                    listaDeProdutosGlobal = await resposta.json()
+                    listaDeProdutosGlobal.forEach(produto => {
+                        const option = document.createElement('option');
+                        option.value = produto._id;
+                        option.textContent = produto.produto;
+                        select.appendChild(option);
+                    })  
+                }
+            }
+            catch(err){
+                alert('Erro ao carregar lista de produtos')
+            }
+        };
+
         async function verHistorico(nomeCliente) {
             document.querySelectorAll('section').forEach(s => s.style.display = 'none');
             document.querySelector('#tela-historico').style.display = 'block';
@@ -882,7 +1267,14 @@
             document.querySelector('#titulo-historico').innerText = `Serviços: ${nomeCliente}`;
 
             try{
-                const resposta = await fetch('http://localhost:3000/os')
+                const token = localStorage.getItem('token')
+                const resposta = await fetch('http://localhost:3000/os',{
+                    method: "GET",
+                    headers:{
+                        "Authorization": token,
+                        "Content-type": "application/json"
+                    }
+                })
                 if(resposta.ok){
                     const todasOS = await resposta.json()
                     const historicofiltrado = todasOS.filter(os => os.cliente === nomeCliente);
@@ -921,6 +1313,48 @@
             document.querySelector('#tela-historico').style.display = 'none';
             document.querySelector('#tela-lista-clientes').style.display = 'block';
         };
+
+        function gerarPdf(id) {
+            // Abre a rota do PDF em uma nova aba para iniciar o download
+            window.open(`http://localhost:3000/os/${id}/pdf`, '_blank');
+        }
+
+        function formatarMoeda(input) {
+            // 1. Pega apenas os dígitos numéricos do que foi digitado
+            let valor = input.value.replace(/\D/g, "");
+
+            // 2. Transforma em número e divide por 100 para criar os centavos
+            valor = (Number(valor) / 100).toFixed(2);
+
+            // 3. Formata no padrão de moeda Real Brasileiro
+            valor = valor.replace(".", ",");
+            valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+            // 4. Devolve o valor formatado para o input com o R$ na frente
+            input.value = "R$ " + valor;
+        }
+
+        // Função auxiliar para converter "R$ 1.250,53" em 1250.53
+        function converterParaNumero(valorFormatado) {
+            if (!valorFormatado) return 0;
+            // Remove "R$", espaços e pontos de milhar, e troca a vírgula por ponto
+            let limpo = valorFormatado.replace("R$", "").replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+            return Number(limpo) || 0;
+        }
+
+        // Função para colocar a data de hoje no formato YYYY-MM-DD que o input exige
+        function definirDataAtual() {
+            const inputData = document.querySelector('#data-venda');
+            const hoje = new Date();
+            
+            const ano = hoje.getFullYear();
+            // O mês começa em 0, então somamos 1. O padStart garante que fique "05" em vez de "5"
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            
+            inputData.value = `${ano}-${mes}-${dia}`;
+        }
+
     </script>
 </body>
 </html>
