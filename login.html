@@ -24,6 +24,8 @@
     </div>        
 
     <script>
+        const url = "https://osflow-9u40.onrender.com"
+
         let modoCadastro = false
         const formulario = document.querySelector('#form-auth')
         const linkAlternar = document.querySelector('#link-alternar')
@@ -58,7 +60,7 @@
             const rota = modoCadastro ? '/auth/register' : '/auth/login'
 
             try{
-                const resposta = await fetch(`http://localhost:3000${rota}`, {
+                const resposta = await fetch(`${url}${rota}`, {
                     method: 'POST',
                     headers: {'Content-Type' : 'application/json'},
                     body: JSON.stringify(dadosFormulario)

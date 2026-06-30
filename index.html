@@ -274,6 +274,9 @@
     </nav>
 
     <script>
+
+        const url = "https://osflow-9u40.onrender.com"
+
     const selectTipoOs = document.querySelector('#select-tipo-os');
     const formOs = document.querySelector('#form-os');
     const blocoManutencao = document.querySelector('#bloco-manutencao');
@@ -362,7 +365,7 @@
             // =======================================================================
             if (editandoIndiceOs !== null) {
                 try {
-                    const resposta = await fetch(`http://localhost:3000/os/${editandoIndiceOs}`, {
+                    const resposta = await fetch(`${url}/os/${editandoIndiceOs}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -394,7 +397,7 @@
             } 
             else {
                 try {
-                    const resposta = await fetch('http://localhost:3000/os/', {
+                    const resposta = await fetch(`${url}/os/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -446,7 +449,7 @@
 
             if(editandoIndiceCliente === null){
                 try{
-                    const resposta = await fetch('http://localhost:3000/cliente', {
+                    const resposta = await fetch(`${url}/cliente`, {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json',
@@ -466,7 +469,7 @@
                 }
             } else{
                 try{
-                    const resposta = await fetch(`http://localhost:3000/cliente/${editandoIndiceCliente}`, {
+                    const resposta = await fetch(`${url}/cliente/${editandoIndiceCliente}`, {
                         method: "PUT",
                         headers: {
                             'Content-Type' : 'application/json',
@@ -507,7 +510,7 @@
             const token = localStorage.getItem('token')
 
             try{
-                const resposta = await fetch('http://localhost:3000/produto',{
+                const resposta = await fetch(`${url}/produto`,{
                     method: 'POST',
                     headers : {
                         "Authorization" : token,
@@ -571,7 +574,7 @@
             const token = localStorage.getItem('token');
 
             try {
-                const resposta = await fetch('http://localhost:3000/venda', {
+                const resposta = await fetch(`${url}/venda`, {
                     method: 'POST',
                     headers: {
                         "Authorization": token,
@@ -791,7 +794,7 @@
             const token = localStorage.getItem('token')
 
             try{
-                const resposta = await fetch('http://localhost:3000/cliente', {
+                const resposta = await fetch(`${url}/cliente`, {
                     method: 'GET',
                     headers: {
                         'Authorization': token,
@@ -840,7 +843,7 @@
         async function editarCliente(id){
             try{
                 const token = localStorage.getItem('token')
-                const resposta = await fetch('http://localhost:3000/cliente',{
+                const resposta = await fetch(`${url}/cliente`,{
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -884,13 +887,13 @@
             containerListaOs.innerHTML = ""
             
             try{
-                const resposta= await fetch('http://localhost:3000/os', {
+                const resposta= await fetch(`${url}/os`, {
                     method: 'GET',
                     headers: {
                         'Authorization': token, // Envia o crachá para o servidor
                         'Content-Type': 'application/json'
                     }
-                })
+                });
 
                 // Se o servidor responder que não está autorizado (401 ou 403)
                 if (resposta.status === 401 || resposta.status === 403) {
@@ -965,7 +968,7 @@
 
             try{
                 const token = localStorage.getItem('token')
-                const resposta = await fetch('http://localhost:3000/os',{
+                const resposta = await fetch(`${url}/os`,{
                     method: "GET",
                     headers:{
                         "Authorization": token,
@@ -1002,7 +1005,7 @@
             const token = localStorage.getItem('token')
 
             try{
-                const resposta = await fetch('http://localhost:3000/produto', {
+                const resposta = await fetch(`${url}/produto`, {
                     method: "GET",
                     headers: {
                         "Authorization": token,
@@ -1053,7 +1056,7 @@
             const token = localStorage.getItem('token');
 
             try {
-                const resposta = await fetch('http://localhost:3000/venda', {
+                const resposta = await fetch(`${url}/venda`, {
                     method: "GET",
                     headers: {
                         "Authorization": token,
@@ -1109,7 +1112,7 @@
         async function excluirCliente(id) {
             if(!confirm('Tem certeza de que deseja excliuir este cliente?')){return}
             try{
-                const resposta = await fetch(`http://localhost:3000/cliente/${id}`, {
+                const resposta = await fetch(`${url}/cliente/${id}`, {
                     method: 'DELETE'
                 })
                 if (resposta.ok){
@@ -1129,7 +1132,7 @@
         async function excluirOs(id){
             if(!confirm("Tem certeza de que deseja excluir?")){return};
             try{
-                const resposta = await fetch(`http://localhost:3000/os/${id}`, {
+                const resposta = await fetch(`${url}/os/${id}`, {
                     method:'DELETE'
                 })
                 if(resposta.ok){
@@ -1150,7 +1153,7 @@
         inputBusca.addEventListener('input', async () => {
             try{
                 const token = localStorage.getItem('token')
-                const resposta = await fetch('http://localhost:3000/cliente',{
+                const resposta = await fetch(`${url}/cliente`,{
                     method: "GET",
                     headers: {
                         "Authorization": token,
@@ -1199,7 +1202,7 @@
             const select = document.querySelector('#select-clientes');
             select.innerHTML = '<option value="">Selecione um cliente</option>'
             try{
-                const resposta = await fetch('http://localhost:3000/cliente', {
+                const resposta = await fetch(`${url}/cliente`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1232,7 +1235,7 @@
             const select = document.querySelector('#select-produtos');
             select.innerHTML = '<option value="">Selecione um produto</option>'
             try{
-                const resposta = await fetch('http://localhost:3000/produto', {
+                const resposta = await fetch(`${url}/produto`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1268,7 +1271,7 @@
 
             try{
                 const token = localStorage.getItem('token')
-                const resposta = await fetch('http://localhost:3000/os',{
+                const resposta = await fetch(`${url}/os`,{
                     method: "GET",
                     headers:{
                         "Authorization": token,
@@ -1316,7 +1319,7 @@
 
         function gerarPdf(id) {
             // Abre a rota do PDF em uma nova aba para iniciar o download
-            window.open(`http://localhost:3000/os/${id}/pdf`, '_blank');
+            window.open(`${url}/os/${id}/pdf`, '_blank');
         }
 
         function formatarMoeda(input) {
