@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const OrdemServicoSchema = new mongoose.Schema({
-    // Campo para identificar o tipo: 'manutencao' ou 'instalacao'
+    numero_os: {
+        type: Number,
+        required: true
+    },
     tipo: { 
         type: String, 
         enum: ['manutencao', 'instalacao'], 

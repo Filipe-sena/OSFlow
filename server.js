@@ -73,7 +73,7 @@ app.post('/os', verificarToken, async (req, res) => {
 
 app.get('/os', verificarToken,  async (req,res) =>{
     try{
-        const todasOs = await OrdemServico.find({usuario: req.usuario.id})
+        const todasOS = await OrdemServico.find({ usuario: req.usuario.id }).populate('cliente');
         res.status(200).json(todasOs)
     }
     catch (err){

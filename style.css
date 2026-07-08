@@ -324,6 +324,114 @@ table td[colspan="4"] {
     gap: 15px; /* ISSO vai afastar os labels e inputs perfeitamente por igual */
 }
 
+/* O fundo escurecido atrás da janela */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo preto transparente */
+    backdrop-filter: blur(3px); /* Efeito borrado no fundo */
+}
+
+/* A caixinha branca do conteúdo */
+.modal-conteudo {
+    background-color: #202024; /* Combina com o tema escuro do seu app */
+    color: #ffffff;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: 8px;
+    width: 50%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+/* O botão de fechar (X) */
+.btn-fechar {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-fechar:hover {
+    color: #ff3333;
+}
+
+/* Organização dos parágrafos de detalhes */
+#conteudo-detalhes-os p {
+    margin: 12px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #29292e;
+    padding-bottom: 5px;
+}
+
+/* Container que posiciona o botão no canto superior direito */
+.menu-contextual-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+}
+
+/* O botão de 3 pontinhos em si */
+.btn-tres-pontos {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.btn-tres-pontos:hover {
+    color: #ffffff;
+}
+
+/* A caixinha flutuante que guarda as opções */
+.menu-opcoes-dropdown {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background-color: #2b2b32; /* Um cinza um pouco mais claro que o card */
+    border: 1px solid #3e3e4a;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    min-width: 140px;
+    overflow: hidden;
+}
+
+/* Os botões de ação dentro do menu flutuante */
+.menu-opcoes-dropdown button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* Efeito ao passar o mouse nas opções normais */
+.menu-opcoes-dropdown button:hover {
+    background-color: #3e3e4a;
+}
+
+/* Destaque vermelho ao passar o mouse na opção Excluir */
+.menu-opcoes-dropdown button.btn-dropdown-delete:hover {
+    background-color: #ff3333;
+    color: #ffffff;
+}
+
 @media (max-width: 800px){
     .div-os{
         padding: 10px;

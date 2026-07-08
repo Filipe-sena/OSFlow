@@ -128,18 +128,40 @@
         <div class="titulo-pagina">
             <h1>Exibindo todas as ordens de serviço</h1>
         </div>
-        <select id="select-opcoes-2" style="width: 200px;">
-            <option value="antiga">Mais antiga (Recebimento)</option>
-            <option value="nova">Mais nova (Recebimento)</option>
-            <option value="prazo">Prazo de entrega (Próximas)</option>
-        </select>
-        <select id="select-opcoes-exibicao" style="width: 200px;">
-            <option value="todas">Todas OS</option>
-            <option value="orcamento">Em orçamento</option>
-            <option value="andamento">Em andamento</option>
-            <option value="pagamento">Aguardando pagamento</option>
-            <option value="concluido">Concluída</option>
-        </select>
+
+        <div class="container-filtros" style="margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+            
+            <div class="grupo-filtro" style="display: flex; flex-direction: column;">
+                <label for="select-opcoes-2" style="color: #aaa; font-size: 14px; margin-bottom: 5px; font-weight: bold;">Ordenação:</label>
+                <select id="select-opcoes-2" style="width: 200px;">
+                    <option value="antiga">Mais antiga (Recebimento)</option>
+                    <option value="nova">Mais nova (Recebimento)</option>
+                    <option value="prazo">Prazo de entrega (Próximas)</option>
+                </select>
+            </div>
+
+            <div class="grupo-filtro" style="display: flex; flex-direction: column;">
+                <label for="select-opcoes-exibicao" style="color: #aaa; font-size: 14px; margin-bottom: 5px; font-weight: bold;">Filtrar por Status:</label>
+                <select id="select-opcoes-exibicao" style="width: 200px;">
+                    <option value="todas">Todas OS</option>
+                    <option value="orcamento">Em orçamento</option>
+                    <option value="andamento">Em andamento</option>
+                    <option value="pagamento">Aguardando pagamento</option>
+                    <option value="concluido">Concluída</option>
+                </select>
+            </div>
+
+            <div class="grupo-filtro" style="display: flex; flex-direction: column;">
+                <label for="select-opcoes-tipo" style="color: #aaa; font-size: 14px; margin-bottom: 5px; font-weight: bold;">Filtrar por Tipo:</label>
+                <select id="select-opcoes-tipo" style="width: 200px;" onchange="renderizarOs()">
+                    <option value="todas">Todos</option>
+                    <option value="manutencao">Manutenção</option>
+                    <option value="instalacao">Instalação</option>
+                </select>
+            </div>
+
+        </div>
+
         <div id="container-todas-os"></div>        
     </section>
 
@@ -272,6 +294,16 @@
 
         </ul>
     </nav>
+
+    <div id="modal-detalhes" class="modal" style="display: none;">
+        <div class="modal-conteudo">
+            <span class="btn-fechar" onclick="fecharModal()">&times;</span>
+            <h2>Detalhes Completos da Ordem de Serviço</h2>
+            <hr>
+            <div id="conteudo-detalhes-os">
+                </div>
+        </div>
+    </div>
 
     <script>
 
@@ -877,9 +909,11 @@
             }
         }
 
+        let listaOsFiltrada = [];
         async function renderizarOs() {
             const criterio1 = document.querySelector('#select-opcoes-exibicao').value;
             const criterio2 = document.querySelector('#select-opcoes-2').value;
+            const criterio3 = document.querySelector('#select-opcoes-tipo').value
             const containerListaOs = document.querySelector('#container-todas-os');
 
             const token = localStorage.getItem('token')
@@ -904,13 +938,15 @@
                 
                 if(resposta.ok){
                     const listaOS = await resposta.json()
-                    listaOsFiltrada = listaOS.filter(os => {
-                        if (criterio1 === "todas"){
-                            return true
-                        } else{
+                    listaOsFiltrada = listaOS
+                        .filter(os => {
+                            if (criterio1 === "todas") return true;
                             return os.status === criterio1;
-                        }
-                    });
+                        })
+                        .filter(os => {
+                            if (criterio3 === "todas") return true;
+                            return os.tipo === criterio3;
+                        });
                     if(listaOsFiltrada.length === 0) {
                         const aviso = document.createElement('div');
                         aviso.classList.add('div-aviso');
@@ -938,16 +974,28 @@
 
                     listaOsFiltrada.forEach((os) => {
                         const divOS = document.createElement('div');
-                        divOS.classList.add('div-os')
+                        divOS.classList.add('div-os');
+                        
+                        // Deixamos a div-os com position: relative para o menu flutuante se alinhar por ela
+                        divOS.style.position = 'relative'; 
+
                         divOS.innerHTML = `
-                            <h3 style="color: #00b900; margin-bottom: 10px;"> OS ${os.numero_os}</h3>
-                            <h1>${os.produto}</h1>
-                            <p><strong>Cliente:</strong> ${os.cliente}</p>
+                            <div class="menu-contextual-container">
+                                <button class="btn-tres-pontos" onclick="toggleMenuOpcoes(event, '${os._id}')">⋮</button>
+                                <div id="menu-opcoes-${os._id}" class="menu-opcoes-dropdown" style="display: none;">
+                                    <button onclick="editarOs('${os._id}')">✏️ Editar</button>
+                                    <button onclick="gerarPdf('${os._id}')">📄 Gerar PDF</button>
+                                    <button class="btn-dropdown-delete" onclick="excluirOs('${os._id}')">🗑️ Excluir</button>
+                                </div>
+                            </div>
+
+                            <h3 style="color: #00b900; margin-bottom: 10px;"> OS ${os.numero_os || '---'}</h3>
+                            <h1>${os.produto || os.instalacaoDescricao || 'Sem descrição'}</h1>
+                            <p><strong>Cliente:</strong> ${os.cliente ? os.cliente.nome : 'Não encontrado'}</p>
                             <p><strong>Valor:</strong> R$ ${os.valor}</p>
+                            
                             <div class="div-buttons-card">
-                                <button class="btn btn-delete" onclick="excluirOs('${os._id}')">Excluir</button>
-                                <button class="btn btn-edit" onclick="editarOs('${os._id}')">Editar</button>
-                                <button class="btn btn-neutral" onclick="gerarPdf('${os._id}')">PDF</button>
+                                <button class="btn btn-neutral" style="width: 100%;" onclick="verDetalhesOs('${os._id}')">Ver Mais</button>
                             </div>
                         `;
                         containerListaOs.appendChild(divOS);
@@ -958,6 +1006,67 @@
                 console.log('Erro ao carregar as ordens de serviço', err);
             }
         };
+
+        // Função para abrir a modal e injetar todos os campos da OS
+        function verDetalhesOs(id) {
+            // Procura a OS desejada dentro da listaOsFiltrada ou listaOS que você já buscou do backend
+            const os = listaOsFiltrada.find(item => item._id === id);
+            
+            if (!os) {
+                alert("Erro ao carregar detalhes da ordem.");
+                return;
+            }
+
+            const containerConteudo = document.querySelector('#conteudo-detalhes-os');
+            
+            // Montando a exibição condicional dependendo se é Manutenção ou Instalação
+            let camposExclusivos = '';
+            if (os.tipo === 'manutencao') {
+                camposExclusivos = `
+                    <p><strong>Produto/Aparelho:</strong> ${os.produto || 'Não informado'}</p>
+                    <p><strong>Defeito Relatado:</strong> ${os.relato || 'Não informado'}</p>
+                    <p><strong>Observações:</strong> ${os.observacao || 'Nenhuma'}</p>
+                    <p><strong>Laudo Técnico:</strong> ${os.laudo || 'Sem laudo cadastrado'}</p>
+                    <p><strong>Data de Entrega:</strong> ${os.dataEntrega ? new Date(os.dataEntrega).toLocaleDateString('pt-BR') : 'Não entregue'}</p>
+                `;
+            } else {
+                camposExclusivos = `
+                    <p><strong>Descrição da Instalação:</strong> ${os.instalacaoDescricao || 'Não informado'}</p>
+                    <p><strong>Valor da Mão de Obra:</strong> R$ ${os.valorMaoDeObra || '0,00'}</p>
+                `;
+            }
+
+            // Injeta as informações gerais + os campos específicos dentro da modal
+            containerConteudo.innerHTML = `
+                <div class="detalhes-grid">
+                    <p><strong>Número da OS:</strong> ${os.numero_os || 'Sem número'}</p>
+                    <p><strong>Tipo de Serviço:</strong> ${os.tipo === 'manutencao' ? 'Manutenção' : 'Instalação'}</p>
+                    <p><strong>Status Atual:</strong> <span class="status-badge">${os.status.toUpperCase()}</span></p>
+                    <p><strong>Cliente:</strong> ${os.cliente ? os.cliente.nome : 'Não identificado'}</p>
+                    <p><strong>Data de Recebimento:</strong> ${new Date(os.dataRecebimento).toLocaleDateString('pt-BR')}</p>
+                    <p><strong>Valor Total:</strong> R$ ${os.valor}</p>
+                    <hr>
+                    <h3>Informações Específicas:</h3>
+                    ${camposExclusivos}
+                </div>
+            `;
+
+            // Mostra a modal na tela mudando o display para block
+            document.querySelector('#modal-detalhes').style.display = 'block';
+        }
+
+        // Função simples para esconder a modal de volta
+        function fecharModal() {
+            document.querySelector('#modal-detalhes').style.display = 'none';
+        }
+
+        // Fecha a modal se o usuário clicar em qualquer lugar fora da caixinha branca
+        window.onclick = function(event) {
+            const modal = document.querySelector('#modal-detalhes');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
         let editandoIndiceOs = null;
         async function editarOs(id){
@@ -1357,6 +1466,33 @@
             
             inputData.value = `${ano}-${mes}-${dia}`;
         }
+
+        // Função para abrir/fechar o menu de três pontinhos
+        function toggleMenuOpcoes(event, id) {
+            // Evita que o clique se espalhe para o resto do card
+            event.stopPropagation(); 
+            
+            // Fecha qualquer outro menu que esteja aberto antes de abrir o novo
+            fecharTodosMenus();
+
+            const menu = document.getElementById(`menu-opcoes-${id}`);
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+
+        // Função auxiliar para esconder todos os menus abertos
+        function fecharTodosMenus() {
+            const menus = document.querySelectorAll('.menu-opcoes-dropdown');
+            menus.forEach(menu => menu.style.display = 'none');
+        }
+
+        // Se o usuário clicar em qualquer lugar da tela, fecha os menus abertos
+        window.addEventListener('click', function() {
+            fecharTodosMenus();
+        });
 
     </script>
 </body>
