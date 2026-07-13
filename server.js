@@ -74,7 +74,7 @@ app.post('/os', verificarToken, async (req, res) => {
 app.get('/os', verificarToken,  async (req,res) =>{
     try{
         const todasOS = await OrdemServico.find({ usuario: req.usuario.id }).populate('cliente');
-        res.status(200).json(todasOs)
+        res.status(200).json(todasOS)
     }
     catch (err){
         res.status(500).json({ message: "Erro ao buscar as OS", erro: err.message });
