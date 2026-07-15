@@ -1069,43 +1069,92 @@
         }
 
         let editandoIndiceOs = null;
-        async function editarOs(id){
+        async function editarOs(id) {
+            // 1. Esconde todas as seções e exibe a tela de OS (exatamente como você faz no seu código original)
             document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
             document.querySelector('#tela-os').style.display = "block";
+            
+            // Carrega os clientes no select antes de preencher os dados da OS
+            await exibirClientes(); 
 
-            exibirClientes();
-
-            try{
-                const token = localStorage.getItem('token')
-                const resposta = await fetch(`${url}/os`,{
+            try {
+                const token = localStorage.getItem('token');
+                
+                // 2. Busca todas as OS usando o seu método Fetch original
+                const resposta = await fetch(`${url}/os`, {
                     method: "GET",
-                    headers:{
+                    headers: {
                         "Authorization": token,
                         "Content-Type": "application/json"
                     }
-                })
-                const listaOS = await resposta.json();
-                const os = listaOS.find(item => item._id === id);
-                
-                if(os){
-                    document.querySelector('#select-status-os').value = os.status;
-                    document.querySelector('#select-clientes').value = os.cliente;
-                    document.querySelector('#produto').value = os.produto;
-                    document.querySelector('#observacao').value = os.observacao;
-                    document.querySelector('#relato').value = os.relato;
-                    document.querySelector('#laudo').value = os.laudo;
-                    document.querySelector('#valor').value = os.valor;
+                });
 
-                    if(os.dataRecebimento) document.querySelector('#data-recebimento').value = os.dataRecebimento.split('T')[0];
-                    if(os.dataEntrega) document.querySelector('#data-entrega').value = os.dataEntrega.split('T')[0];
+                if (resposta.ok) {
+                    const listaOS = await resposta.json();
+                    
+                    // 3. Encontra a OS com o ID correto usando o .find()
+                    const os = listaOS.find(item => item._id === id);
 
-                    editandoIndiceOs = id;
+                    if (os) {
+                        // Guarda o ID da OS que está sendo editada
+                        editandoIndiceOs = id;
+
+                        // 4. PREENCHE OS CAMPOS DO TOPO
+                        document.querySelector('#select-tipo-os').value = os.tipo;
+                        document.querySelector('#select-status-os').value = os.status;
+                        
+                        // Trata o preenchimento do select de clientes caso ele venha populado como objeto ou ID puro
+                        if (os.cliente && typeof os.cliente === 'object') {
+                            document.querySelector('#select-clientes').value = os.cliente._id;
+                        } else {
+                            document.querySelector('#select-clientes').value = os.cliente;
+                        }
+
+                        // 5. EXIBE O FORMULÁRIO (resolve o problema de abrir em branco)
+                        const formOs = document.querySelector('#form-os');
+                        formOs.style.display = "flex"; // Mostra o formulário que estava display: none
+
+                        const blocoManutencao = document.querySelector('#bloco-manutencao');
+                        const blocoInstalacao = document.querySelector('#bloco-instalacao');
+
+                        // 6. EXIBE OS BLOCOS ESPECÍFICOS E PREENCHE SEUS VALORES
+                        if (os.tipo === 'manutencao') {
+                            blocoManutencao.style.display = "flex";
+                            blocoInstalacao.style.display = "none";
+
+                            // Preenche campos de manutenção
+                            document.querySelector('#produto').value = os.produto || '';
+                            document.querySelector('#observacao').value = os.observacao || '';
+                            document.querySelector('#relato').value = os.relato || '';
+                            document.querySelector('#laudo').value = os.laudo || '';
+                            document.querySelector('#data-entrega').value = os.dataEntrega ? os.dataEntrega.split('T')[0] : '';
+
+                            // Remove obrigatoriedade dos campos de instalação
+                            document.querySelector('#instalacao-descricao').required = false;
+                        } else if (os.tipo === 'instalacao') {
+                            blocoInstalacao.style.display = "flex";
+                            blocoManutencao.style.display = "none";
+
+                            // Preenche campos de instalação
+                            document.querySelector('#instalacao-descricao').value = os.instalacaoDescricao || '';
+                            document.querySelector('#valor-mao-de-obra').value = os.valorMaoDeObra || 0;
+
+                            // Remove obrigatoriedade dos campos de manutenção
+                            document.querySelector('#produto').required = false;
+                            document.querySelector('#relato').required = false;
+                            document.querySelector('#data-entrega').required = false;
+                        }
+
+                        // Preenche os campos finais comuns
+                        document.querySelector('#valor').value = os.valor || 0;
+                        document.querySelector('#data-recebimento').value = os.dataRecebimento ? os.dataRecebimento.split('T')[0] : '';
+                    }
                 }
-            }
-            catch(err){
-                alert('Erro ao carregar dados da OS')
+            } catch (err) {
+                console.log('Erro ao buscar dados da ordem de serviço para edição', err);
             }
         }
+
 
         async function renderizarProdutos(){
             const containerProdutos = document.querySelector('#container-todos-produtos')

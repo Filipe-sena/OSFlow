@@ -113,35 +113,142 @@ app.put('/os/:id', async (req,res) => {
 
 app.get('/os/:id/pdf', async (req, res) => {
     try {
-        const os = await OrdemServico.findById(req.params.id);
+        // Busca a OS populando o cliente para exibir o nome dele no PDF
+        const os = await OrdemServico.findById(req.params.id).populate('cliente');
         if (!os) return res.status(404).send("Ordem de serviço não encontrada");
 
-        const doc = new PDFDocument({ margin: 50 });
+        const doc = new PDFDocument({ 
+            margin: 50,
+            size: 'A4'
+        });
 
-        // Cabeçalho da resposta para download
+        // Configura os cabeçalhos de resposta para download
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=OS_${os.numero_os}.pdf`);
 
-        doc.pipe(res); // Envia o PDF para o navegador
+        doc.pipe(res);
 
-        // --- Layout do PDF ---
-        doc.fontSize(20).text('RELATÓRIO DE ORDEM DE SERVIÇO', { align: 'center' });
-        doc.moveDown();
-        doc.lineWidth(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke(); // Linha divisória
-        doc.moveDown();
+        // --- Cores do Tema ---
+        const azulEscuro = '#1e293b'; // Slate 800 (Elegante e moderno)
+        const cinzaClaro = '#f8fafc'; // Fundo dos blocos
+        const cinzaBorda = '#e2e8f0'; // Linhas divisórias
+        const textoEscuro = '#0f172a'; // Cor principal do texto
+        const textoMutado = '#64748b'; // Cor secundária para etiquetas
 
-        doc.fontSize(12).text(`Número da OS: ${os.numero_os}`, { bullet: true });
-        doc.text(`Cliente: ${os.cliente}`);
-        doc.text(`Produto: ${os.produto}`);
-        doc.text(`Status: ${os.status.toUpperCase()}`);
-        doc.text(`Valor: R$ ${os.valor.toFixed(2)}`);
+        // --- 1. CABEÇALHO COM DESIGN MODERNO ---
+        // Faixa superior decorativa
+        doc.rect(0, 0, 612, 110).fill(azulEscuro);
+
+        // Título e Subtítulo dentro da faixa (Brancos)
+        doc.fillColor('#ffffff')
+           .font('Helvetica-Bold')
+           .fontSize(22)
+           .text('ORDEM DE SERVIÇO', 50, 40);
+
+        doc.font('Helvetica')
+           .fontSize(10)
+           .fillColor('#94a3b8')
+           .text(`SISTEMA OSFLOW - RELATÓRIO OFICIAL`, 50, 68);
+
+        // Número da OS destacado no canto superior direito
+        doc.fillColor('#ffffff')
+           .font('Helvetica-Bold')
+           .fontSize(24)
+           .text(`Nº ${os.numero_os || '---'}`, 430, 45, { align: 'right', width: 130 });
+
+        // Ajusta o cursor para começar abaixo da faixa azul do cabeçalho
+        doc.y = 140;
+
+        // --- 2. BLOCO: INFORMAÇÕES GERAIS (Fundo Cinza) ---
+        doc.rect(50, doc.y, 512, 105).fill(cinzaClaro).stroke(cinzaBorda);
         
-        doc.moveDown();
-        doc.fontSize(14).text('Descrição Técnica:', { underline: true });
-        doc.fontSize(12).text(`Relato: ${os.relato || 'N/A'}`);
-        doc.text(`Laudo: ${os.laudo || 'Pendente'}`);
+        // Dados dentro do bloco
+        let yInfo = doc.y + 15;
+        doc.fillColor(textoEscuro);
 
-        doc.end(); // Finaliza e envia
+        // Coluna 1 (Esquerda)
+        doc.font('Helvetica-Bold').fontSize(10).fillColor(textoMutado).text('CLIENTE:', 70, yInfo);
+        doc.font('Helvetica').fontSize(11).fillColor(textoEscuro).text(os.cliente ? os.cliente.nome : 'Não informado', 70, yInfo + 15);
+
+        doc.font('Helvetica-Bold').fontSize(10).fillColor(textoMutado).text('DATA DE RECEBIMENTO:', 70, yInfo + 45);
+        const dataRec = os.dataRecebimento ? new Date(os.dataRecebimento).toLocaleDateString('pt-BR') : '---';
+        doc.font('Helvetica').fontSize(11).fillColor(textoEscuro).text(dataRec, 70, yInfo + 60);
+
+        // Coluna 2 (Direita)
+        doc.font('Helvetica-Bold').fontSize(10).fillColor(textoMutado).text('TIPO DE SERVIÇO:', 330, yInfo);
+        const tipoTexto = os.tipo === 'manutencao' ? 'Manutenção' : 'Instalação';
+        doc.font('Helvetica').fontSize(11).fillColor(textoEscuro).text(tipoTexto, 330, yInfo + 15);
+
+        doc.font('Helvetica-Bold').fontSize(10).fillColor(textoMutado).text('STATUS ATUAL:', 330, yInfo + 45);
+        doc.font('Helvetica-Bold').fontSize(11).fillColor(azulEscuro).text(os.status.toUpperCase(), 330, yInfo + 60);
+
+        // Empurra o cursor para baixo do bloco de Info
+        doc.y = yInfo + 110;
+
+        // --- 3. BLOCO: CAMPOS ESPECÍFICOS (Condicional) ---
+        doc.font('Helvetica-Bold').fontSize(13).fillColor(azulEscuro).text('Informações Detalhadas', 50, doc.y);
+        doc.moveDown(0.5);
+        doc.lineWidth(1).moveTo(50, doc.y).lineTo(562, doc.y).stroke(cinzaBorda);
+        doc.moveDown(1);
+
+        doc.fillColor(textoEscuro);
+        if (os.tipo === 'manutencao') {
+            doc.font('Helvetica-Bold').fontSize(11).text('Aparelho / Produto:');
+            doc.font('Helvetica').fontSize(11).fillColor('#334155').text(os.produto || 'Não informado');
+            doc.moveDown(0.8);
+
+            doc.font('Helvetica-Bold').fillColor(textoEscuro).text('Defeito Relatado:');
+            doc.font('Helvetica').fillColor('#334155').text(os.relato || 'Não informado');
+            doc.moveDown(0.8);
+
+            doc.font('Helvetica-Bold').fillColor(textoEscuro).text('Laudo Técnico:');
+            doc.font('Helvetica').fillColor('#334155').text(os.laudo || 'Sem laudo cadastrado');
+            doc.moveDown(0.8);
+
+            doc.font('Helvetica-Bold').fillColor(textoEscuro).text('Observações Adicionais:');
+            doc.font('Helvetica').fillColor('#334155').text(os.observacao || 'Nenhuma');
+            doc.moveDown(0.8);
+
+            doc.font('Helvetica-Bold').fillColor(textoEscuro).text('Data de Entrega:');
+            const dataEnt = os.dataEntrega ? new Date(os.dataEntrega).toLocaleDateString('pt-BR') : 'Não entregue';
+            doc.font('Helvetica').fillColor('#334155').text(dataEnt);
+        } else {
+            // Instalação
+            doc.font('Helvetica-Bold').fontSize(11).text('Descrição do Serviço de Instalação:');
+            doc.font('Helvetica').fontSize(11).fillColor('#334155').text(os.instalacaoDescricao || 'Não informado');
+            doc.moveDown(1);
+
+            doc.font('Helvetica-Bold').fillColor(textoEscuro).text('Valor da Mão de Obra:');
+            const maoObra = os.valorMaoDeObra ? `R$ ${os.valorMaoDeObra.toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            doc.font('Helvetica').fillColor('#334155').text(maoObra);
+        }
+
+        // --- 4. RODAPÉ DE VALORES (Fixado na parte inferior da página) ---
+        const yRodape = 700;
+        doc.lineWidth(1.5).moveTo(50, yRodape).lineTo(562, yRodape).stroke(azulEscuro);
+
+        // Valor Total destacado
+        doc.font('Helvetica-Bold')
+           .fontSize(12)
+           .fillColor(textoMutado)
+           .text('VALOR TOTAL:', 50, yRodape + 15);
+
+        doc.fontSize(20)
+           .fillColor(azulEscuro)
+           .text(`R$ ${os.valor.toFixed(2).replace('.', ',')}`, 50, yRodape + 30);
+
+        // Assinatura do Técnico/Responsável no lado direito
+        doc.lineWidth(1)
+           .moveTo(350, yRodape + 45)
+           .lineTo(550, yRodape + 45)
+           .stroke(textoMutado);
+
+        doc.font('Helvetica')
+           .fontSize(9)
+           .fillColor(textoMutado)
+           .text('Assinatura do Técnico / Responsável', 350, yRodape + 52, { align: 'center', width: 200 });
+
+        doc.end();
     } catch (err) {
         res.status(500).json({ message: "Erro ao gerar PDF", erro: err.message });
     }
