@@ -170,6 +170,7 @@ textarea:focus{
     gap: 20px;
 }
 .card{
+    position: relative;
     background-color: #252331;
     color: white;
     flex: calc(33% - 30px);
@@ -225,7 +226,7 @@ select:focus {
     padding: 30px;
     margin: 0 auto;
 }
-#container-todas-os{
+#container-todas-os, #container-todos-produtos{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;

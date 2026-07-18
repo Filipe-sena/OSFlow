@@ -540,35 +540,56 @@
             }
 
             const token = localStorage.getItem('token')
+            if(editandoIndiceProduto === null){
+                try{
+                    const resposta = await fetch(`${url}/produto`,{
+                        method: 'POST',
+                        headers : {
+                            "Authorization" : token,
+                            "Content-Type" : "application/json"
+                        },
+                        body : JSON.stringify(produto)
+                    })
 
-            try{
-                const resposta = await fetch(`${url}/produto`,{
-                    method: 'POST',
-                    headers : {
-                        "Authorization" : token,
-                        "Content-Type" : "application/json"
-                    },
-                    body : JSON.stringify(produto)
-                })
+                    if (resposta.status === 401 || resposta.status === 403) {
+                        alert("Sessão expirada. Faça login novamente.");
+                        window.location.href = 'index.html';
+                        return;
+                    }
 
-                if (resposta.status === 401 || resposta.status === 403) {
-                    alert("Sessão expirada. Faça login novamente.");
-                    window.location.href = 'index.html';
-                    return;
+                    if(resposta.ok){
+                        alert(`O produto ${produto.produto} foi cadastrado com sucesso`)
+                        formProdutos.reset()
+                    }
+                    else {
+                        // Caso o servidor responda com erro 400 (ex: falta de campo obrigatório)
+                        const erroDados = await resposta.json()
+                        alert(`Erro do servidor: ${erroDados.message} ${erroDados.erro}`)
+                    }
+                } catch(err){
+                    console.error("Erro na requisição:", err)
+                    alert("Não foi possível se conectar ao servidor")
                 }
-
-                if(resposta.ok){
-                    alert(`O produto ${produto.produto} foi cadastrado com sucesso`)
-                    formProdutos.reset
+            } else{
+                try{
+                    const resposta = await fetch(`${url}/produto/${editandoIndiceProduto}`, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type' : 'application/json',
+                            'Authorization': token
+                        },
+                        body: JSON.stringify(produto)
+                    })
+                    if(resposta.ok){
+                        alert(`O produto ${produto.produto} foi atualizado com sucesso`)
+                        editandoIndiceProduto = null
+                        linkTodosProdutos.click()
+                        formProdutos.reset()
+                    }
                 }
-                else {
-                    // Caso o servidor responda com erro 400 (ex: falta de campo obrigatório)
-                    const erroDados = await resposta.json()
-                    alert(`Erro do servidor: ${erroDados.message} ${erroDados.erro}`)
+                catch(err){
+                    alert('Não foi possível se comunicar com o servidor')
                 }
-            } catch(err){
-                console.error("Erro na requisição:", err)
-                alert("Não foi possível se conectar ao servidor")
             }
         })
 
@@ -853,13 +874,21 @@
                         cartao.classList.add('card');
 
                         cartao.innerHTML = `
+                            <div class="menu-contextual-container">
+                                <button class="btn-tres-pontos" onclick="toggleMenuOpcoes(event, '${cliente._id}')">
+                                    ⋮
+                                </button>                        
+                                <div id="menu-opcoes-${cliente._id}" class="menu-opcoes-dropdown" style="display: none;">
+                                    <button onclick="editarCliente('${cliente._id}')">✏️ Editar</button>
+                                    <button onclick="verHistorico('${cliente._id}')">📄 Histórico</button>
+                                    <button class="btn-dropdown-delete" onclick="excluirCliente('${cliente.nome}')">🗑️ Excluir</button>
+                                </div>                                 
+                            </div>
                             <h3>${cliente.nome}</h3>
                             <p>CPF: ${cliente.cpf}</p>
                             <p>Tel: ${cliente.telefone}</p>
                             <div class="div-buttons-card">
-                                <button class='btn btn-delete' onclick="excluirCliente('${cliente._id}')">Excluir</button>
-                                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
-                                <button class="btn btn-edit" onclick="editarCliente('${cliente._id}')">Editar</button>
+                                <button class="btn btn-neutral" onclick="verDetalhesCliente('${cliente.nome}')">Ver detalhes</button>
                             </div>
                         `;
                         container.appendChild(cartao);
@@ -1192,11 +1221,23 @@
                         const divProduto = document.createElement('div')
                         divProduto.classList.add('card')
                         divProduto.innerHTML = `
+                            <div class="menu-contextual-container">
+                            <button class="btn-tres-pontos" onclick="toggleMenuOpcoes(event, '${produto._id}')">
+                                ⋮
+                            </button>                        
+                            <div id="menu-opcoes-${produto._id}" class="menu-opcoes-dropdown" style="display: none;">
+                                <button onclick="editarProduto('${produto._id}')">✏️ Editar</button>
+                                <button class="btn-dropdown-delete" onclick="excluirProduto('${produto._id}')">🗑️ Excluir</button>
+                            </div>                                 
+                        </div>
                         <h2>${produto.produto}</h2>
                         <p>${produto.descricao || 'Sem descrição'}</p>
                         <p>Preço de Compra: ${Number(produto.valorCompra).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         <p>Preço de Venda: ${Number(produto.valorVenda).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         <p>Estoque: ${produto.estoque} uni.</p>
+                        <div class="div-buttons-card">
+                            <button class="btn btn-neutral" onclick="verDetalhesProduto('${produto.nome}')">Ver detalhes</button>
+                        </div>
                         `
                         containerProdutos.appendChild(divProduto)
                     })
@@ -1344,12 +1385,22 @@
                 const cartao = document.createElement('div');
                 cartao.classList.add('card');
                 cartao.innerHTML = `
-                <h3>${cliente.nome}</h3>
-                <p>CPF: ${cliente.cpf}</p>
-                <p>Tel: ${cliente.telefone}</p>
-                <button class='btn btn-delete' onclick="excluirCliente('${cliente._id}')">Excluir</button>
-                <button class="btn btn-neutral" onclick="verHistorico('${cliente.nome}')">Histórico</button>
-                <button class="btn btn-edit" onclick="editarCliente('${cliente._id}')">Editar</button>
+                    <div class="menu-contextual-container">
+                        <button class="btn-tres-pontos" onclick="toggleMenuOpcoes(event, '${cliente._id}')">
+                            ⋮
+                        </button>                        
+                        <div id="menu-opcoes-${cliente._id}" class="menu-opcoes-dropdown" style="display: none;">
+                            <button onclick="editarCliente('${cliente._id}')">✏️ Editar</button>
+                            <button onclick="verHistorico('${cliente._id}')">📄 Histórico</button>
+                            <button class="btn-dropdown-delete" onclick="excluirCliente('${cliente.nome}')">🗑️ Excluir</button>
+                        </div>                                 
+                    </div>
+                    <h3>${cliente.nome}</h3>
+                    <p>CPF: ${cliente.cpf}</p>
+                    <p>Tel: ${cliente.telefone}</p>
+                    <div class="div-buttons-card">
+                        <button class="btn btn-neutral" onclick="verDetalhesCliente('${cliente.nome}')">Ver detalhes</button>
+                    </div>
                 `;
                 containerClientes.appendChild(cartao);
             });
@@ -1421,6 +1472,64 @@
             }
         };
 
+        async function excluirProduto(id) {
+            if(!confirm('Tem certeza de que deseja excliuir este produto?')){return}
+            try{
+                const resposta = await fetch(`${url}/produto/${id}`, {
+                    method: 'DELETE'
+                })
+                if (resposta.ok){
+                    alert('Produto excluído com sucesso')
+                    linkClientes.click()
+                } else{
+                    const erro = resposta.json()
+                    alert(`Erro: ${erro.message}`)
+                }
+            }            
+            catch(err){
+                console.error("Erro ao conectar com o servidor:", err);
+                alert('Não foi possível se conectar ao servidor')
+            }
+        }
+
+        let editandoIndiceProduto = null
+        async function editarProduto(id){
+            try{
+                const token = localStorage.getItem('token')
+                const resposta = await fetch(`${url}/produto`,{
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    }
+                })
+                if(resposta.ok){
+                    const listaProduto = await resposta.json()
+                    const produto = listaProduto.find(item => item._id === id)
+                    if(produto)  {
+                        document.querySelector('#nome-produto').value = produto.produto
+                        document.querySelector('#descricao-produto').value = produto.descricao
+                        document.querySelector('#valor-compra').value = produto.valorCompra
+                        document.querySelector('#valor-venda').value = produto.valorVenda
+                        document.querySelector('#estoque').value = produto.estoque
+
+                        document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+                        document.querySelector('#tela-cadastro-produtos').style.display = "block"
+
+                        editandoIndiceProduto = id
+                    } else{
+                        alert('ERRO: Não existe produto com este id')
+                    }
+                } else{
+                    alert('Erro: Não foi possível pegar os dados do produto na api de produtos')
+                }
+            }
+            catch(err){
+                alert('Não foi possivel pegar os dados do servidor')
+                console.log('Erro no try')
+            }
+        }
+
         async function verHistorico(nomeCliente) {
             document.querySelectorAll('section').forEach(s => s.style.display = 'none');
             document.querySelector('#tela-historico').style.display = 'block';
@@ -1474,6 +1583,11 @@
             document.querySelector('#tela-historico').style.display = 'none';
             document.querySelector('#tela-lista-clientes').style.display = 'block';
         };
+
+        function voltarParaTodasOs(){
+            document.querySelectorAll('section').forEach(pag => pag.style.display = 'none')
+            document.querySelector('#tela-todas-os').style.display = "block"
+        }
 
         function gerarPdf(id) {
             // Abre a rota do PDF em uma nova aba para iniciar o download

@@ -335,6 +335,36 @@ app.get('/produto', verificarToken, async (req,res) => {
     }
 })
 
+app.delete('/produto/:id', async (req,res) => {
+    try{
+        const id = req.params.id
+        const produtoExcluido = Produto.findByIdAndDelete(id)
+        if(!produtoExcluido){
+            return res.status(400).json({message: "Produto não encontrado"})
+        }
+        res.status(200).json({message: "Produto Deletado"})
+    }
+    catch(err){
+        res.status(500).json({message: "Não foi possível se conectar ao servidor"})
+    }
+})
+
+app.put('/produto/:id', async (req,res) => {
+    try{
+        const id = req.params.id
+        const dadosProduto = req.body
+        const produtoAtualizado = await Produto.findByIdAndUpdate(id, dadosProduto, {returnDocument: 'after'})
+
+        if(!produtoAtualizado){
+            return res.status(400).json({message:"Não foi possível encontrar este Produto"})
+        }
+        res.status(200).json(produtoAtualizado)
+    }
+    catch(err){
+        res.status(500).json({message: "Não foi possível se conectar ao servidor"})
+    }
+})
+
 const Venda = require('./models/Venda')
 app.post('/venda', verificarToken, async (req,res) => {
     try{
