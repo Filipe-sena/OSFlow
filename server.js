@@ -391,6 +391,44 @@ app.get('/venda', verificarToken, async (req,res) =>{
     }
 })
 
+// Rota para EXCLUIR uma venda por ID
+app.delete('/venda/:id', verificarToken, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const vendaExcluida = await Venda.findOneAndDelete({ _id: id, usuario: req.usuario.id });
+        
+        if (!vendaExcluida) {
+            return res.status(404).json({ message: "Venda não encontrada" });
+        }
+        
+        res.status(200).json({ message: "Venda excluída com sucesso" });
+    } catch (err) {
+        res.status(500).json({ message: "Erro ao excluir venda", erro: err.message });
+    }
+});
+
+// Rota para ATUALIZAR uma venda por ID
+app.put('/venda/:id', verificarToken, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const dadosVenda = req.body;
+        
+        const vendaAtualizada = await Venda.findOneAndUpdate(
+            { _id: id, usuario: req.usuario.id },
+            dadosVenda,
+            { returnDocument: 'after' }
+        );
+
+        if (!vendaAtualizada) {
+            return res.status(404).json({ message: "Venda não encontrada" });
+        }
+        
+        res.status(200).json(vendaAtualizada);
+    } catch (err) {
+        res.status(500).json({ message: "Erro ao atualizar venda", erro: err.message });
+    }
+});
+
 const Usuario = require('./models/Usuario');
 app.post('/auth/register', async (req, res) => {
     try {

@@ -433,6 +433,73 @@ table td[colspan="4"] {
     color: #ffffff;
 }
 
+/* Container para alinhar os ícones lado a lado */
+.acoes-tabela {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo base dos botões de ícone */
+.btn-icone {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Botão de Editar */
+.btn-icone.edit {
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.btn-icone.edit:hover {
+    background-color: rgba(59, 130, 246, 0.15);
+    border-color: #3b82f6;
+}
+
+/* Botão de Excluir */
+.btn-icone.delete {
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.btn-icone.delete:hover {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+/* Força a tabela a respeitar as porcentagens e ocupar 100% da largura */
+#aba-historico-vendas table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Essencial para manter a proporção exata das colunas */
+}
+
+/* Espaçamento e bordas padronizadas para o cabeçalho e células */
+#aba-historico-vendas th, 
+#aba-historico-vendas td {
+    padding: 12px 10px;
+    vertical-align: middle;
+    word-wrap: break-word; /* Evita que nomes de produtos muito grandes quebrem o layout */
+}
+
+/* Estilo do cabeçalho */
+#aba-historico-vendas th {
+    background-color: #1a1824;
+    color: #a0aec0;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #2d3748;
+}
+
 @media (max-width: 800px){
     .div-os{
         padding: 10px;

@@ -231,10 +231,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Data</th>
-                            <th>Produto/Serviço</th>
-                            <th>Valor Cobrado</th>
-                            <th>Lucro</th>
+                            <th style="width: 15%; text-align: center;">Data</th>
+                            <th style="width: 35%; text-align: left;">Produto / Serviço</th>
+                            <th style="width: 20%; text-align: right;">Valor Cobrado</th>
+                            <th style="width: 15%; text-align: right;">Lucro</th>
+                            <th style="width: 15%; text-align: center;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="corpo-tabela-vendas">
@@ -301,6 +302,26 @@
             <h2>Detalhes Completos da Ordem de Serviço</h2>
             <hr>
             <div id="conteudo-detalhes-os">
+                </div>
+        </div>
+    </div>
+
+    <div id="modal-detalhes-cliente" class="modal" style="display: none;">
+        <div class="modal-conteudo">
+            <span class="btn-fechar" onclick="fecharModalCliente()">&times;</span>
+            <h2>Detalhes Completos do cliente</h2>
+            <hr>
+            <div id="conteudo-detalhes-cliente">
+                </div>
+        </div>
+    </div>
+
+    <div id="modal-detalhes-produto" class="modal" style="display: none;">
+        <div class="modal-conteudo">
+            <span class="btn-fechar" onclick="fecharModalProduto()">&times;</span>
+            <h2>Detalhes Completos do produto</h2>
+            <hr>
+            <div id="conteudo-detalhes-produto">
                 </div>
         </div>
     </div>
@@ -626,14 +647,17 @@
 
             const token = localStorage.getItem('token');
 
+            const metodoHttp = editandoIndiceVenda ? 'PUT' : 'POST';
+            const endpoint = editandoIndiceVenda ? `${url}/venda/${editandoIndiceVenda}` : `${url}/venda`;
+
             try {
-                const resposta = await fetch(`${url}/venda`, {
-                    method: 'POST',
+                const resposta = await fetch(endpoint, {
+                    method: metodoHttp,
                     headers: {
                         "Authorization": token,
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(venda) // Agora o JSON vai completo e com números perfeitos!
+                    body: JSON.stringify(venda)
                 });
 
                 if (resposta.status === 401 || resposta.status === 403) {
@@ -643,13 +667,14 @@
                 }
 
                 if (resposta.ok) {
-                    alert(`A venda do produto "${venda.produto}" foi registrada com sucesso!`);
-                    formVendas.reset(); // CORREÇÃO: Faltavam os parênteses '()' para executar a limpeza do formulário
+                    const mensagem = editandoIndiceVenda ? "atualizada" : "registrada";
+                    alert(`A venda do produto "${venda.produto}" foi ${mensagem} com sucesso!`);
                     
-                    // Se você tiver a função de repor a data de hoje criada anteriormente, chame ela aqui:
-                    if (typeof definirDataAtual === "function") {
-                        definirDataAtual();
-                    }
+                    formVendas.reset();
+                    editandoIndiceVenda = null; // Reseta o ID de edição
+
+                    // Redireciona o usuário de volta para o Histórico de Vendas
+                    linkHistoricoVendas.click();
                 } else {
                     const erroDados = await resposta.json();
                     alert(`Erro do servidor: ${erroDados.message}. ${erroDados.erro || ''}`);
@@ -841,6 +866,7 @@
 
         /*  ////////////SEÇÃO PARA AS FUNÇÕES //////////////*/
 
+        let clientes = [];
         async function renderizarClientes() {
             const container = document.querySelector('#container-clientes');
             container.innerHTML = "";
@@ -860,7 +886,7 @@
                 }
 
                 if(resposta.ok){
-                    const clientes = await resposta.json()
+                    clientes = await resposta.json()
                     if (clientes.length === 0) {
                         const aviso = document.createElement('div');
                         aviso.classList.add('div-aviso');
@@ -888,7 +914,7 @@
                             <p>CPF: ${cliente.cpf}</p>
                             <p>Tel: ${cliente.telefone}</p>
                             <div class="div-buttons-card">
-                                <button class="btn btn-neutral" onclick="verDetalhesCliente('${cliente.nome}')">Ver detalhes</button>
+                                <button class="btn btn-neutral" onclick="verDetalhesCliente('${cliente._id}')">Ver detalhes</button>
                             </div>
                         `;
                         container.appendChild(cartao);
@@ -899,6 +925,45 @@
                 console.log("Erro ao conectar com o servidor")
             }
         };
+
+        function verDetalhesCliente(id) {
+            // Procura a OS desejada dentro da listaOsFiltrada ou listaOS que você já buscou do backend
+            const cliente = clientes.find(item => item._id === id);
+            
+            if (!cliente) {
+                alert("Erro ao carregar detalhes do cliente.");
+                return;
+            }
+
+            const containerConteudo = document.querySelector('#conteudo-detalhes-cliente');
+        
+            // Injeta as informações gerais + os campos específicos dentro da modal
+            containerConteudo.innerHTML = `
+                <div class="detalhes-grid">
+                    <p><strong>Nome do cliente:</strong> ${cliente.nome || 'Sem número'}</p>
+                    <p><strong>CPF:</strong> ${cliente.cpf || 'Sem informações'}</p>
+                    <p><strong>Telefone:</strong> ${cliente.telefone}</p>
+                    <p><strong>Descrição:</strong> ${cliente.descricao}</p>
+                    <p><strong>Endereço:</strong> R$ ${cliente.endereco}</p>
+                </div>
+            `;
+
+            // Mostra a modal na tela mudando o display para block
+            document.querySelector('#modal-detalhes-cliente').style.display = 'block';
+        }
+
+        // Função simples para esconder a modal de volta
+        function fecharModalCliente() {
+            document.querySelector('#modal-detalhes-cliente').style.display = 'none';
+        }
+
+        // Fecha a modal se o usuário clicar em qualquer lugar fora da caixinha branca
+        window.onclick = function(event) {
+            const modal = document.querySelector('#modal-detalhes-cliente');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
         let editandoIndiceCliente = null;
         async function editarCliente(id){
@@ -1184,7 +1249,7 @@
             }
         }
 
-
+        let listaProdutos
         async function renderizarProdutos(){
             const containerProdutos = document.querySelector('#container-todos-produtos')
             containerProdutos.innerHTML = ""
@@ -1207,7 +1272,7 @@
                 }
                 
                 if(resposta.ok){
-                    const listaProdutos = await resposta.json()
+                    listaProdutos = await resposta.json()
 
                     if (listaProdutos.length === 0) {
                         const aviso = document.createElement('div');
@@ -1236,7 +1301,7 @@
                         <p>Preço de Venda: ${Number(produto.valorVenda).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         <p>Estoque: ${produto.estoque} uni.</p>
                         <div class="div-buttons-card">
-                            <button class="btn btn-neutral" onclick="verDetalhesProduto('${produto.nome}')">Ver detalhes</button>
+                            <button class="btn btn-neutral" onclick="verDetalhesProduto('${produto._id}')">Ver detalhes</button>
                         </div>
                         `
                         containerProdutos.appendChild(divProduto)
@@ -1247,6 +1312,44 @@
             }
         } 
 
+        function verDetalhesProduto(id) {
+            // Procura a OS desejada dentro da listaOsFiltrada ou listaOS que você já buscou do backend
+            const produto = listaProdutos.find(item => item._id === id);
+            
+            if (!produto) {
+                alert("Erro ao carregar detalhes do produto.");
+                return;
+            }
+
+            const containerConteudo = document.querySelector('#conteudo-detalhes-produto');
+        
+            // Injeta as informações gerais + os campos específicos dentro da modal
+            containerConteudo.innerHTML = `
+                <div class="detalhes-grid">
+                    <p><strong>Nome do produto:</strong> ${produto.produto || 'Sem número'}</p>
+                    <p><strong>Valor compra:</strong> ${produto.valorCompra || 'Sem informações'}</p>
+                    <p><strong>Valor venda:</strong> ${produto.valorVenda}</p>
+                    <p><strong>Descrição:</strong> ${produto.descricao}</p>
+                    <p><strong>Estoque:</strong> ${produto.estoque}</p>
+                </div>
+            `;
+
+            // Mostra a modal na tela mudando o display para block
+            document.querySelector('#modal-detalhes-produto').style.display = 'block';
+        }
+
+        // Função simples para esconder a modal de volta
+        function fecharModalProduto() {
+            document.querySelector('#modal-detalhes-produto').style.display = 'none';
+        }
+
+        // Fecha a modal se o usuário clicar em qualquer lugar fora da caixinha branca
+        window.onclick = function(event) {
+            const modal = document.querySelector('#modal-detalhes-produto');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
         async function renderizarTabelaVendas() {
             const corpoTabela = document.querySelector('#corpo-tabela-vendas');
@@ -1296,6 +1399,16 @@
                             <td>${venda.produto || 'Produto não identificado'}</td>
                             <td>${valorCobradoFormatado}</td>
                             <td style="color: ${corLucro}; font-weight: bold;">${lucroFormatado}</td>
+                            <td style="text-align: center;">
+                                <div class="acoes-tabela">
+                                    <button class="btn-icone edit" title="Editar Venda" onclick="editarVenda('${venda._id}')">
+                                        ✏️
+                                    </button>
+                                    <button class="btn-icone delete" title="Excluir Venda" onclick="excluirVenda('${venda._id}')">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
                         `;
 
                         // 5. Adiciona a linha dentro do corpo da tabela
@@ -1305,6 +1418,85 @@
             } catch (err) {
                 console.error("Erro detalhado na requisição:", err); 
                 alert('Erro ao se conectar com o servidor');
+            }
+        }
+
+        let editandoIndiceVenda = null;
+
+        // FUNÇÃO PARA EXCLUIR UMA VENDA
+        async function excluirVenda(id) {
+            if (!confirm('Tem certeza de que deseja excluir esta venda?')) return;
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const resposta = await fetch(`${url}/venda/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': token
+                    }
+                });
+
+                if (resposta.ok) {
+                    alert('Venda excluída com sucesso!');
+                    renderizarTabelaVendas(); // Recarrega a tabela após excluir
+                } else {
+                    const erro = await resposta.json();
+                    alert(`Erro: ${erro.message}`);
+                }
+            } catch (err) {
+                console.error("Erro ao conectar com o servidor:", err);
+                alert('Não foi possível se conectar ao servidor');
+            }
+        }
+
+        // FUNÇÃO PARA PREENCHER O FORMULÁRIO NA EDIÇÃO
+        async function editarVenda(id) {
+            const token = localStorage.getItem('token');
+
+            try {
+                // 1. Garante que os produtos estejam no select da tela de vendas
+                await exibirProdutos();
+
+                // 2. Busca todas as vendas para encontrar a clicada
+                const resposta = await fetch(`${url}/venda`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (resposta.ok) {
+                    const listaVendas = await resposta.json();
+                    const venda = listaVendas.find(item => item._id === id);
+
+                    if (venda) {
+                        editandoIndiceVenda = id;
+
+                        // 3. Muda a visualização para a tela do formulário de vendas
+                        document.querySelectorAll('section').forEach(pag => pag.style.display = "none");
+                        document.querySelector('#tela-vendas').style.display = "block";
+
+                        // 4. Preenche a data
+                        document.querySelector('#data-venda').value = venda.data ? venda.data.split('T')[0] : '';
+
+                        // 5. Seleciona o produto no <select> pelo texto exibido na opção
+                        const selectProdutos = document.querySelector('#select-produtos');
+                        for (let i = 0; i < selectProdutos.options.length; i++) {
+                            if (selectProdutos.options[i].text === venda.produto) {
+                                selectProdutos.selectedIndex = i;
+                                break;
+                            }
+                        }
+
+                        // 6. Preenche os valores cobrados e calculados com a máscara
+                        document.querySelector('#valor-compra-produto').value = (venda.valorCobrado - venda.lucro).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        document.querySelector('#valor-venda-produto').value = Number(venda.valorCobrado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao carregar venda para edição:", err);
             }
         }
             
@@ -1480,7 +1672,7 @@
                 })
                 if (resposta.ok){
                     alert('Produto excluído com sucesso')
-                    linkClientes.click()
+                    linkTodosProdutos.click()
                 } else{
                     const erro = resposta.json()
                     alert(`Erro: ${erro.message}`)
