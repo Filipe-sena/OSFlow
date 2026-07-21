@@ -6,7 +6,11 @@ const ProdutoSchema = new mongoose.Schema({
     valorCompra: {type: Number, default: 0},
     valorVenda: {type: Number, default: 0},
     usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-    estoque: { type: Number, default: 0 }
+    estoque: { type: Number, default: 0 },
+    categoria: {
+        type: String,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('Produtos', ProdutoSchema)

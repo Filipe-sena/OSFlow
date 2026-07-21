@@ -171,6 +171,65 @@
         </div>
         <div class="div-central">
             <form id="form-produtos">
+                <label for="categoria-produto">Categoria do Produto</label>
+                <select id="categoria-produto" required>
+                    <option value="">-- Selecione uma Categoria --</option>
+
+                    <optgroup label="📡 Materiais de Antenas">
+                        <option value="Antenas Digitais / Parabólicas">Antenas Digitais / Parabólicas</option>
+                        <option value="Receptores e Conversores">Receptores e Conversores</option>
+                        <option value="Cabos Coaxiais e Conectores">Cabos Coaxiais e Conectores</option>
+                        <option value="Suportes e LNBF">Suportes e LNBF</option>
+                    </optgroup>
+
+                    <optgroup label="📹 Segurança Eletrônica">
+                        <option value="Câmeras de Segurança (CFTV)">Câmeras de Segurança (CFTV)</option>
+                        <option value="DVR e NVR (Gravadores)">DVR e NVR (Gravadores)</option>
+                        <option value="Alarmes e Sensores">Alarmes e Sensores</option>
+                        <option value="Cerca Elétrica e Fontes">Cerca Elétrica e Fontes</option>
+                        <option value="Fechaduras e Interfones">Fechaduras e Interfones</option>
+                    </optgroup>
+
+                    <optgroup label="🔑 Chaves e Chaveiro">
+                        <option value="Chaves Virgens">Chaves Virgens</option>
+                        <option value="Capas de Chave Automotiva">Capas de Chave Automotiva</option>
+                        <option value="Cilindros e Fechaduras">Cilindros e Fechaduras</option>
+                        <option value="Acessórios de Chaveiro">Acessórios de Chaveiro (Anéis, Tags)</option>
+                    </optgroup>
+
+                    <optgroup label="🖱️ Periféricos">
+                        <option value="Mouses e Teclados">Mouses e Teclados</option>
+                        <option value="Fones de Ouvido e Headsets">Fones de Ouvido e Headsets</option>
+                        <option value="Pendrives e Cartões de Memória">Pendrives e Cartões de Memória</option>
+                        <option value="Cabos e Adaptadores USB / HDMI">Cabos e Adaptadores USB / HDMI</option>
+                    </optgroup>
+
+                    <optgroup label="💻 Computadores e Componentes">
+                        <option value="Computadores e Notebooks">Computadores e Notebooks</option>
+                        <option value="SSD / HD Interno">SSD / HD Interno</option>
+                        <option value="Memória RAM">Memória RAM</option>
+                        <option value="Fontes de Alimentação">Fontes de Alimentação</option>
+                    </optgroup>
+
+                    <optgroup label="🌐 Materiais de Rede de Internet">
+                        <option value="Roteadores e Repetidores">Roteadores e Repetidores</option>
+                        <option value="Cabo de Rede (UTP/RJ45)">Cabo de Rede (UTP/RJ45)</option>
+                        <option value="Conectores RJ45 e Keystones">Conectores RJ45 e Keystones</option>
+                        <option value="Switches e Patch Cords">Switches e Patch Cords</option>
+                    </optgroup>
+
+                    <optgroup label="🧰 Ferramentas">
+                        <option value="Ferramentas Manuais">Ferramentas Manuais (Alicates, Chaves)</option>
+                        <option value="Ferramentas Elétricas">Ferramentas Elétricas (Parafusadeiras, Furadeiras)</option>
+                        <option value="Equipamentos de Solda">Equipamentos de Solda / Eletrônica</option>
+                        <option value="Consumíveis de Instalação">Consumíveis (Fita Isolante, Buchas, Parafusos)</option>
+                    </optgroup>
+
+                    <optgroup label="📦 Outros">
+                        <option value="Geral / Diversos">Geral / Diversos</option>
+                    </optgroup>
+                </select>
+
                 <label for="nome-produto"></label>
                 <input type="text" id="nome-produto" placeholder="Produto" required>
                 <label for="descricao-produto"></label>
@@ -189,12 +248,88 @@
         </div>
     </section>
 
-    <section id="tela-todos-produtos" style="display: none;">
-        <div class="titulo-pagina">
-            <h1>Produtos cadastrados</h1>
+<section id="tela-todos-produtos" style="display: none;">
+    <div class="titulo-pagina">
+        <h1>Produtos Cadastrados</h1>
+    </div>
+
+    <!-- Container dos Filtros e Pesquisa -->
+    <div class="painel-filtros-produtos">
+        <!-- Campo de Pesquisa -->
+        <div class="grupo-filtro-item busca-flex">
+            <label for="barra-busca-produtos">Buscar Produto</label>
+            <div class="input-com-icone">
+                <span class="icone-busca">🔍</span>
+                <input type="text" id="barra-busca-produtos" placeholder="Digite o nome do produto...">
+            </div>
         </div>
-        <div id="container-todos-produtos"></div>
-    </section>
+
+        <!-- Select de Categoria -->
+        <div class="grupo-filtro-item select-flex">
+            <label for="select-categoria-produto">Filtrar por Categoria</label>
+            <select id="select-categoria-produto">
+                <option value="todas">Todas as Categorias</option>
+
+                <optgroup label="📡 Materiais de Antenas">
+                    <option value="Antenas Digitais / Parabólicas">Antenas Digitais / Parabólicas</option>
+                    <option value="Receptores e Conversores">Receptores e Conversores</option>
+                    <option value="Cabos Coaxiais e Conectores">Cabos Coaxiais e Conectores</option>
+                    <option value="Suportes e LNBF">Suportes e LNBF</option>
+                </optgroup>
+
+                <optgroup label="📹 Segurança Eletrônica">
+                    <option value="Câmeras de Segurança (CFTV)">Câmeras de Segurança (CFTV)</option>
+                    <option value="DVR e NVR (Gravadores)">DVR e NVR (Gravadores)</option>
+                    <option value="Alarmes e Sensores">Alarmes e Sensores</option>
+                    <option value="Cerca Elétrica e Fontes">Cerca Elétrica e Fontes</option>
+                    <option value="Fechaduras e Interfones">Fechaduras e Interfones</option>
+                </optgroup>
+
+                <optgroup label="🔑 Chaves e Chaveiro">
+                    <option value="Chaves Virgens">Chaves Virgens</option>
+                    <option value="Capas de Chave Automotiva">Capas de Chave Automotiva</option>
+                    <option value="Cilindros e Fechaduras">Cilindros e Fechaduras</option>
+                    <option value="Acessórios de Chaveiro">Acessórios de Chaveiro</option>
+                </optgroup>
+
+                <optgroup label="🖱️ Periféricos">
+                    <option value="Mouses e Teclados">Mouses e Teclados</option>
+                    <option value="Fones de Ouvido e Headsets">Fones de Ouvido e Headsets</option>
+                    <option value="Pendrives e Cartões de Memória">Pendrives e Cartões de Memória</option>
+                    <option value="Cabos e Adaptadores USB / HDMI">Cabos e Adaptadores USB / HDMI</option>
+                </optgroup>
+
+                <optgroup label="💻 Computadores e Componentes">
+                    <option value="Computadores e Notebooks">Computadores e Notebooks</option>
+                    <option value="SSD / HD Interno">SSD / HD Interno</option>
+                    <option value="Memória RAM">Memória RAM</option>
+                    <option value="Fontes de Alimentação">Fontes de Alimentação</option>
+                </optgroup>
+
+                <optgroup label="🌐 Materiais de Rede de Internet">
+                    <option value="Roteadores e Repetidores">Roteadores e Repetidores</option>
+                    <option value="Cabo de Rede (UTP/RJ45)">Cabo de Rede (UTP/RJ45)</option>
+                    <option value="Conectores RJ45 e Keystones">Conectores RJ45 e Keystones</option>
+                    <option value="Switches e Patch Cords">Switches e Patch Cords</option>
+                </optgroup>
+
+                <optgroup label="🧰 Ferramentas">
+                    <option value="Ferramentas Manuais">Ferramentas Manuais</option>
+                    <option value="Ferramentas Elétricas">Ferramentas Elétricas</option>
+                    <option value="Equipamentos de Solda">Equipamentos de Solda</option>
+                    <option value="Consumíveis de Instalação">Consumíveis de Instalação</option>
+                </optgroup>
+
+                <optgroup label="📦 Outros">
+                    <option value="Geral / Diversos">Geral / Diversos</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <!-- Lista de Produtos -->
+    <div id="container-todos-produtos"></div>
+</section>
 
     <section id="tela-vendas" style="display: none;">
         <div class="titulo-pagina">
@@ -552,12 +687,14 @@
             const valorCompraDigitado = document.querySelector('#valor-compra').value
             const valorVendaDigitado = document.querySelector('#valor-venda').value
             const estoqueDigitado = document.querySelector('#estoque').value
+            const categoriaSelecionada = document.querySelector('#categoria-produto').value;
             const produto = {
                 produto: nomeProduto,
                 descricao: descricaoProduto,
                 valorCompra: converterParaNumero(valorCompraDigitado) ,
                 valorVenda: converterParaNumero(valorVendaDigitado),
-                estoque: estoqueDigitado
+                estoque: estoqueDigitado,
+                categoria: categoriaSelecionada,
             }
 
             const token = localStorage.getItem('token')
@@ -790,6 +927,11 @@
         const opcoesExibicao2 = document.querySelector('#select-opcoes-2');
         opcoesExibicao2.addEventListener('change', () => {
             renderizarOs();
+        })
+
+        const selectCategoriaProduto = document.querySelector('#select-categoria-produto')
+        selectCategoriaProduto.addEventListener('change', () => {
+            renderizarProdutos()
         })
 
         const inputCompra = document.querySelector('#valor-compra');
@@ -1249,10 +1391,11 @@
             }
         }
 
-        let listaProdutos
+        let listaProdutosFiltrada = []
         async function renderizarProdutos(){
             const containerProdutos = document.querySelector('#container-todos-produtos')
             containerProdutos.innerHTML = ""
+            const categoriaProduto = document.querySelector('select-categoria-produto')
 
             const token = localStorage.getItem('token')
 
@@ -1272,7 +1415,7 @@
                 }
                 
                 if(resposta.ok){
-                    listaProdutos = await resposta.json()
+                    const listaProdutos = await resposta.json()
 
                     if (listaProdutos.length === 0) {
                         const aviso = document.createElement('div');
@@ -1282,7 +1425,21 @@
                         return;
                     }
 
-                    listaProdutos.forEach((produto) => {
+                    listaProdutosFiltrada = listaProdutos
+                        .filter(produto => {
+                            if (categoriaProduto === "todas") return true;
+                            return produto.categoria === categoriaProduto;
+                        })
+
+                    if (listaProdutosFiltrada.length === 0) {
+                        const aviso = document.createElement('div');
+                        aviso.classList.add('div-aviso');
+                        aviso.innerHTML = `<h3>Não há produtos cadastrados nesta categoria</h3>`;
+                        containerProdutos.appendChild(aviso);
+                        return;
+                    }
+
+                    listaProdutosFiltrada.forEach((produto) => {
                         const divProduto = document.createElement('div')
                         divProduto.classList.add('card')
                         divProduto.innerHTML = `
@@ -1569,6 +1726,35 @@
             }
         })
 
+        const inputBuscaProdutos = document.querySelector('#barra-busca-produtos');
+        inputBuscaProdutos.addEventListener('input', async () => {
+            try{
+                const token = localStorage.getItem('token')
+                const resposta = await fetch(`${url}/produto`,{
+                    method: "GET",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type" : "application/json"
+                    }
+                })
+                if(resposta.ok){
+                    const todosProdutos = await resposta.json()
+                    const valorBuscaProduto = inputBuscaProdutos.value.toLowerCase();
+                    const produtosFiltrados = todosProdutos.filter(produto => {
+                        return produto.produto.toLowerCase().includes(valorBuscaProduto);
+                    })
+                    renderizarProdutosFiltrados(produtosFiltrados);
+                } else{
+                    const erro = resposta.json()
+                    console.log(`Erro no fetch para api de produtos: ${erro}`)
+                }
+            }
+            catch(err){
+                alert('Erro ao fazer busca no servidor')
+                console.log('Erro no try')
+            }
+        })
+
         function renderizarClientesFiltrados(clientesFiltrados) {
             containerClientes = document.querySelector('#container-clientes');
             containerClientes.innerHTML = "";
@@ -1597,6 +1783,36 @@
                 containerClientes.appendChild(cartao);
             });
         };
+
+        function renderizarProdutosFiltrados(produtosFiltrados){
+            const containerProdutos = querySelector('#container-todos-produtos')
+            containerProdutos.innerHTML = ""
+
+            listaProdutosFiltrada.forEach((produto) => {
+                const divProduto = document.createElement('div')
+                divProduto.classList.add('card')
+                divProduto.innerHTML = `
+                    <div class="menu-contextual-container">
+                    <button class="btn-tres-pontos" onclick="toggleMenuOpcoes(event, '${produto._id}')">
+                        ⋮
+                    </button>                        
+                    <div id="menu-opcoes-${produto._id}" class="menu-opcoes-dropdown" style="display: none;">
+                        <button onclick="editarProduto('${produto._id}')">✏️ Editar</button>
+                        <button class="btn-dropdown-delete" onclick="excluirProduto('${produto._id}')">🗑️ Excluir</button>
+                    </div>                                 
+                </div>
+                <h2>${produto.produto}</h2>
+                <p>${produto.descricao || 'Sem descrição'}</p>
+                <p>Preço de Compra: ${Number(produto.valorCompra).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                <p>Preço de Venda: ${Number(produto.valorVenda).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                <p>Estoque: ${produto.estoque} uni.</p>
+                <div class="div-buttons-card">
+                    <button class="btn btn-neutral" onclick="verDetalhesProduto('${produto._id}')">Ver detalhes</button>
+                </div>
+                `
+                containerProdutos.appendChild(divProduto)
+            })
+        }
 
         async function exibirClientes() {
             const token = localStorage.getItem('token')
