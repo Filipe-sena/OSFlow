@@ -338,7 +338,7 @@ app.get('/produto', verificarToken, async (req,res) => {
 app.delete('/produto/:id', async (req,res) => {
     try{
         const id = req.params.id
-        const produtoExcluido = Produto.findByIdAndDelete(id)
+        const produtoExcluido = await Produto.findByIdAndDelete(id)
         if(!produtoExcluido){
             return res.status(400).json({message: "Produto não encontrado"})
         }

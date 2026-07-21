@@ -1395,7 +1395,7 @@
         async function renderizarProdutos(){
             const containerProdutos = document.querySelector('#container-todos-produtos')
             containerProdutos.innerHTML = ""
-            const categoriaProduto = document.querySelector('select-categoria-produto')
+            const categoriaProduto = document.querySelector('#select-categoria-produto').value
 
             const token = localStorage.getItem('token')
 
@@ -1785,7 +1785,7 @@
         };
 
         function renderizarProdutosFiltrados(produtosFiltrados){
-            const containerProdutos = querySelector('#container-todos-produtos')
+            const containerProdutos = document.querySelector('#container-todos-produtos')
             containerProdutos.innerHTML = ""
 
             listaProdutosFiltrada.forEach((produto) => {
